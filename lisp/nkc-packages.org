@@ -8,14 +8,28 @@ all the autoload stuff but it's still nice to make it explicit.
 ** Dependencies
 #+BEGIN_SRC emacs-lisp
   (require 'use-package)
-  (require 'bind-keys)
+  (require 'bind-key)
 #+END_SRC
 ** Helper functions
    These are just helpers for package loading. If they help other
    stuff they oughta go somewhere else.
 * Packages
+** Magit
+   [[https://github.com/magit/magit][github]] [[http://magit.vc/manual/][manual]]
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :bind (("C-c g s" . magit-status)
+           ("C-c g p" . magit-pull)))
+#+END_SRC
+** TODO Tramp
 * Modes
 * Themes
+** Solarized
+   [[https://github.com/sellout/emacs-color-theme-solarized][github]]
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'solarized t)
+#+END_SRC
+*** TODO rewrite solarized-color-definitions per old .emacs
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-packages)

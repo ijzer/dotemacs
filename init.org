@@ -59,6 +59,10 @@ more specialized files from lisp/
 #+END_SRC
 * Load settings
 ** Packages
+   Setup for packages, package-specific bindings, that sort of thing.
+#+BEGIN_SRC emacs-lisp
+  (use-package nkc-packages)
+#+END_SRC
 ** Themes
 ** Keybindings
 ** Settings

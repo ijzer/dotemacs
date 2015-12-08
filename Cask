@@ -19,6 +19,7 @@
 (depends-on "org")
 (depends-on "org-plus-contrib")
 (depends-on "pallet")
+(depends-on "powerline")
 (depends-on "smart-mode-line")
 (depends-on "smart-tabs-mode")
 (depends-on "swiper-helm")

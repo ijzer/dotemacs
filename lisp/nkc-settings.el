@@ -20,9 +20,9 @@
 
 ;; [[file:~/.emacs.d/lisp/nkc-settings.org::*Backups][Backups:1]]
 
-(setq backup-directory-alist '(("." . (concat user-emacs-directory "backups")))
-      auto-save-file-name-transforms '(("\\(.*\\)" (concat user-emacs-directory
-                                                     "auto-save-list/\\2") t)))
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+      auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory
+                                                      "auto-save-list") t)))
 
 ;; Backups:1 ends here
 

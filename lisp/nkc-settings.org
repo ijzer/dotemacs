@@ -19,9 +19,9 @@ files. Nothing fancy I'm afraid.
    emacs likes to strew backup and autosave files everywhere. They
    ought to be in one place. So let's do that.
 #+BEGIN_SRC emacs-lisp
-  (setq backup-directory-alist '(("." . (concat user-emacs-directory "backups")))
-        auto-save-file-name-transforms '(("\\(.*\\)" (concat user-emacs-directory
-                                                       "auto-save-list/\\2") t)))
+  (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+        auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory
+                                                        "auto-save-list") t)))
 #+END_SRC
    I habitually use version control so I don't need many backups and I
    don't care if I don't have old ones around.

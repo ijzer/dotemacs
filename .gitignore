@@ -1,0 +1,20 @@
+# autosave files
+\#*\#
+auto-save-list
+
+# backups
+backups
+*~
+
+# compiled elisp
+*.elc
+
+# org-mode
+org-clock-save.el
+.org-id-locations
+
+# misc
+tramp
+.\#*
+elpa
+recentf

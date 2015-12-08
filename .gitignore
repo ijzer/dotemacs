@@ -14,7 +14,7 @@ org-clock-save.el
 .org-id-locations
 
 # cask
-cask
+.cask
 
 # misc
 tramp

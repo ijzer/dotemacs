@@ -21,6 +21,8 @@
 (depends-on "pallet")
 (depends-on "smart-mode-line")
 (depends-on "smart-tabs-mode")
-(depends-on "solarized" :git "https://github.com/sellout/emacs-color-theme-solarized.git")
 (depends-on "swiper-helm")
 (depends-on "use-package")
+;;;pallet-ignore
+(depends-on "solarized" :git "https://github.com/sellout/emacs-color-theme-solarized.git")
+

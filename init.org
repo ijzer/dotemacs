@@ -12,31 +12,18 @@ more specialized files from lisp/
    without it. Plus there's a ton of stuff in the lisp/ directory that
    i'd rather not have to specify in use-package. On the other hand
    it's probably better for stuff from other people to be explicitly
-   labeled? So I might remove everything but site-lisp/use-package/
-   and lisp/ from this later.
+   labeled? So I might remove everything but lisp/ from this later. 
 #+BEGIN_SRC emacs-lisp
   (eval-and-compile
     (mapc
      #'(lambda (path)
          (push (expand-file-name path user-emacs-directory) load-path))
-     '("lib" "site-lisp" "lisp" "site-lisp/use-package")))
+     '("lib" "site-lisp" "lisp")))
 #+END_SRC
 * Packages necessary for startup
   I prefer to keep all my package loading in [[file:lisp/nkc-packages.org][nkc-packages.org]] when
   possible but this stuff is needed for getting to that point! So you
   know, I guess that's that.
-** use-package
-   [[https://github.com/jwiegley/use-package][github]]
-   it's a beautiful thing. cask does all the auto-load stuff through
-   package.el but use-package can still do binding/deferral/autoload
-   creation. On top of making it really obvious what package config
-   stuff goes with. At some point I'll look at customize, I
-   promise. But not yet. So use-package, obv.
-#+BEGIN_SRC emacs-lisp
-  (eval-when-compile
-    (setq use-package-verbose t)
-    (require 'use-package))
-#+END_SRC
 ** cask/pallet
    [[https://github.com/cask/cask][cask github]] [[https://github.com/rdallasgray/pallet][pallet github]]
    I guess in theory these guys should get separate entries but they
@@ -50,16 +37,25 @@ more specialized files from lisp/
    packages are actually installed, but we'll need to run
    package-initialize instead.
 #+BEGIN_SRC emacs-lisp
-  (use-package cask
-    :load-path "~/.cask/bin"
-    :config
-    (cask-initialize)
+  (require 'cask "~/.cask/cask.el")
+  (cask-initialize)
 
-    (use-package pallet
-      :config
-      (pallet-mode t)
-      (pallet-install)
-      (pallet-update)))
+  (require 'pallet)
+  (pallet-mode t)
+  (pallet-install)
+  (pallet-update)
+#+END_SRC
+** use-package
+   [[https://github.com/jwiegley/use-package][github]]
+   it's a beautiful thing. cask does all the auto-load stuff through
+   package.el but use-package can still do binding/deferral/autoload
+   creation. On top of making it really obvious what package config
+   stuff goes with. At some point I'll look at customize, I
+   promise. But not yet. So use-package, obv.
+#+BEGIN_SRC emacs-lisp
+  (eval-when-compile
+    (setq use-package-verbose t)
+    (require 'use-package))
 #+END_SRC
 * Load settings
 ** Packages

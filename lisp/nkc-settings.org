@@ -1,0 +1,39 @@
+#+TITLE: Custom Settings
+
+This is all the stuff that doesn't fit in the other settings
+files. Nothing fancy I'm afraid.
+
+* Emacs
+** UI Changes
+   The mouse is the devil in emacs. Someday I'll figure out how to get
+   rid of the damn thing entirely. It'll be beautiful, lemme tell you.
+#+BEGIN_SRC emacs-lisp
+  (tooltip-mode -1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (setq inhibit-startup-screen t
+        use-dialog-box nil)
+#+END_SRC
+** Backups
+   emacs likes to strew backup and autosave files everywhere. They
+   ought to be in one place. So let's do that.
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . (concat user-emacs-directory "backups")))
+        auto-save-file-name-transforms '(("\\(.*\\)" (concat user-emacs-directory
+                                                       "auto-save-list/\\2") t)))
+#+END_SRC
+   I habitually use version control so I don't need many backups and I
+   don't care if I don't have old ones around.
+#+BEGIN_SRC emacs-lisp
+  (setq delete-old-versions t
+        kept-old-versions 0
+        kept-new-versions 5
+        version-control t
+        vc-make-backup-files t
+        backup-by-copying t)
+#+END_SRC
+* Provide
+#+BEGIN_SRC emacs-lisp
+  (provide 'nkc-settings)
+#+END_SRC

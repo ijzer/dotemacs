@@ -1,0 +1,73 @@
+#+TITLE: Init File
+
+This init file mostly just sets up package management through
+cask/pallet/use-package, sets the default load-path (although most of
+that is obviously handled by use-package when needed) and loads the
+more specialized files from lisp/
+
+* Config
+** Load path
+   I definitely could use use-package for this, but when there's bare
+   files in an organizational directory it just feels easier to do
+   without it. Plus there's a ton of stuff in the lisp/ directory that
+   i'd rather not have to specify in use-package. On the other hand
+   it's probably better for stuff from other people to be explicitly
+   labeled? So I might remove everything but site-lisp/use-package/
+   and lisp/ from this later.
+#+BEGIN_SRC emacs-lisp
+  (eval-and-compile
+    (mapc
+     #'(lambda (path)
+         (push (expand-file-name path user-emacs-directory) load-path))
+     '("lib" "site-lisp" "lisp" "site-lisp/use-package")))
+#+END_SRC
+* Packages necessary for startup
+  I prefer to keep all my package loading in [[file:lisp/nkc-packages.org][nkc-packages.org]] when
+  possible but this stuff is needed for getting to that point! So you
+  know, I guess that's that.
+** use-package
+   [[https://github.com/jwiegley/use-package][github]]
+   it's a beautiful thing. cask does all the auto-load stuff through
+   package.el but use-package can still do binding/deferral/autoload
+   creation. On top of making it really obvious what package config
+   stuff goes with. At some point I'll look at customize, I
+   promise. But not yet. So use-package, obv.
+#+BEGIN_SRC emacs-lisp
+  (eval-when-compile
+    (setq use-package-verbose t)
+    (require 'use-package))
+#+END_SRC
+** cask/pallet
+   [[https://github.com/cask/cask][cask github]] [[https://github.com/rdallasgray/pallet][pallet github]]
+   I guess in theory these guys should get separate entries but they
+   really belong together so. Cask makes sure everything listed in
+   [[file:Cask][the Cask file]] is installed and loaded properly, and Pallet makes sure
+   everything installed through M-x load-package is reflected in the
+   Cask file.
+*** TODO check for cask
+   First make sure Cask is installed and figure out where it's
+   hidden. If it isn't, use-package will still work as long as the
+   packages are actually installed, but we'll need to run
+   package-initialize instead.
+#+BEGIN_SRC emacs-lisp
+  (use-package cask
+    :load-path "~/.cask/bin"
+    :config
+    (cask-initialize)
+
+    (use-package pallet
+      :config
+      (pallet-mode t)
+      (pallet-install)
+      (pallet-update)))
+#+END_SRC
+* Load settings
+** Packages
+** Themes
+** Keybindings
+** Settings
+   Basically anything that doesn't fit into an above category. Things
+   that would be in a use-package :config if emacs were a package.
+#+BEGIN_SRC emacs-lisp
+  (use-package nkc-settings)
+#+END_SRC

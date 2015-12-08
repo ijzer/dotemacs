@@ -1,0 +1,22 @@
+#+TITLE: Package Settings
+
+This file is where everything that comes in a package (whether from
+elpa or not) should be loaded and configured. Cask actually handles
+all the autoload stuff but it's still nice to make it explicit.
+
+* Setup
+** Dependencies
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package)
+  (require 'bind-keys)
+#+END_SRC
+** Helper functions
+   These are just helpers for package loading. If they help other
+   stuff they oughta go somewhere else.
+* Packages
+* Modes
+* Themes
+* Provide
+#+BEGIN_SRC emacs-lisp
+  (provide 'nkc-packages)
+#+END_SRC

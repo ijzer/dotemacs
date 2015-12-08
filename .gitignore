@@ -13,6 +13,9 @@ backups
 org-clock-save.el
 .org-id-locations
 
+# cask
+cask
+
 # misc
 tramp
 .\#*

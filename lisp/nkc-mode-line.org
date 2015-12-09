@@ -2,44 +2,108 @@
 
 Sets up a dynamic mode line that takes into account the width of the
 window to shorten and truncate things to display as much as possible
-while remaining readable. The mode line is assembled by
-[[https://github.com/TheBB/spaceline][spaceline]]. sml/do-shorten-directory from [[https://github.com/Malabarba/smart-mode-line][smart-mode-line]] truncates the
-directory and file name as needed, applying rules from 
+while remaining readable. The mode line is initialized by
+[[https://github.com/Malabarba/smart-mode-line][smart-mode-line]] to set up hooks and such and then basically rewritten
+wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual functions from smart-mode-line.
 
 * Setup
+** use-package
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package)
+#+END_SRC
 ** smart-mode-line
    [[https://github.com/Malabarba/smart-mode-line][github]]
+   setting sml/theme to nil limits the colorizing sml adds to the
+   modeline, which makes things a bit easier. calling sml/setup adds
+   some useful hooks even though we're going to be rewriting a lot of
+   the modeline variables sml sets up.
 #+BEGIN_SRC emacs-lisp
   (use-package smart-mode-line)
 #+END_SRC
-** powerline
-   [[https://github.com/milkypostman/powerline][github]]
-* Modes
+** spaceline
+   [[https://github.com/TheBB/spaceline][github]]
 #+BEGIN_SRC emacs-lisp
-  (column-number-mode)
-  (size-indication-mode)
+  (use-package spaceline-segments
+    :config
+    (when window-system
+      (setq spaceline-window-numbers-unicode t)))
 #+END_SRC
-* Mode line
-  The mode line is separated in pieces mainly to make things easier to
-  read. 
+* Use Spaceline
+   Spaceline takes two arguments, things to display on the left-hand
+   and right-hand sides of the mode line.
+#+BEGIN_SRC emacs-lisp
+  (spaceline-install
+   <<spaceline-left>>
+   <<spaceline-right>>)
+#+END_SRC
+* Colors
+* Segments
 ** Left
-   The left side holds the ace-window indicator, the position info,
-   buffer modified status, and buffer/filename
+   This blocks out the spaceline segments the left side of the
+   mode line will use. Segment definitions can be found by searching
+   for spaceline--segment-{name}. 
+#+NAME: spaceline-left
+#+BEGIN_SRC emacs-lisp
+  `((nkc/ace-window
+     :face highlight-face
+     ,@(when window-system '(:tight)))
+    line-column
+    ,@(if window-system '(hud) '(buffer-position))
+    (nkc/buffer-status buffer-id)
+    version-control
+    remote-host)
+#+END_SRC
+** Right 
+   This blocks out the spaceline segments the right side of the
+   mode line will use. Segment definitions can be found by searching
+   for spaceline--segment-{name}.
+#+NAME: spaceline-right
+#+BEGIN_SRC emacs-lisp
+  '((org-clock :when active)
+    major-mode
+    (minor-modes :when active))
+#+END_SRC
+** Segment Definitions
+   We need to add some segments and to rewrite default segments to
+   make things work here
 *** ace window
-#+NAME: ace-mode-line
+    Gives the value of the window for selecting with ace-window
 #+BEGIN_SRC emacs-lisp
-  (ace-window-display-mode
-   (:eval
-    (window-parameter (selected-window) 'ace-window-path)))
+  (spaceline-define-segment nkc/ace-window
+    "The current window number for jumping to with ace-window.
+  Requires ace-window to be installed and ace-window-display mode to be
+  set to true."
+    (let* ((win (window-parameter (selected-window) 'ace-window-path)))
+      (if spaceline-window-numbers-unicode
+	  (spaceline--unicode-number win)
+	win))
+    :when (bound-and-true-p ace-window-display-mode))
 #+END_SRC
-*** Positional indicators
-    This obviously needs more formatting but I think I'll use
-    powerline to do that.
-#+NAME: pos-mode-line
+*** Modified buffers
 #+BEGIN_SRC emacs-lisp
-  ("%3l" "%2c" "%6p" "of" "%I")
+  (defvar nkc/buffer-status-read-only-char "R"
+    "Character to display in modeline if buffer is read-only")
+  (defvar nkc/buffer-status-not-modified-char ""
+    "Character to display in modeline if buffer is not modified")
+  (defvar nkc/buffer-status-modified-char "~"
+    "Character to display in modeline if buffer is modified")
+  (defvar nkc/buffer-status-modified-outside-char "!"
+    "Character to display in modeline if buffer was modified outside emacs")
+
+  (spaceline-define-segment nkc/buffer-status
+    "Displays a character depending on the status of the buffer."
+    (cond
+     ((buffer-stale--default-function) nkc/buffer-status-modified-outside-char)
+     (buffer-read-only nkc/buffer-status-read-only-char)
+     ((buffer-modified-p) nkc/buffer-status-modified-char)
+     (t nkc/buffer-status-not-modified-char)))
 #+END_SRC
-*** Buffer modification indicator
+*** Version control
+    vc-mode gives us useful info but takes up a ton of space.
+    look at [[https://zavoloklom.github.io/material-design-iconic-font/cheatsheet.html][material design iconic font]] for things to display under a
+    windowing system. assuming emacs has a way to add fonts with
+    propertize, which i'm fairly sure it does.
 #+BEGIN_SRC emacs-lisp
 
 #+END_SRC
+

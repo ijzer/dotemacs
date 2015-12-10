@@ -1,0 +1,49 @@
+#+TITLE: Org Settings
+
+* Setup
+** Packages
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package)
+
+  (use-package org)
+#+END_SRC
+* Org Bable
+  I use org bable basically all the time. Here's some stuff that makes
+  that not a nightmare.
+** Open source code editing buffer in same window
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
+** Default header args
+   The important ones here are starred and are changed from the
+   defaults. The rest are p much just there so I can see them all in
+   one place. 
+#+BEGIN_SRC emacs-lisp
+    (setq org-babel-default-header-args '((:session . "none")
+                                         (:results . "value drawer silent")
+                                         (:exports . "code")
+                                         (:cache . "no")
+                                         (:noweb . "no-export") ;***
+                                         (:hlines . "no")
+                                         (:tangle . "yes") ;***
+                                         (:comments . "both"))) ;***
+#+END_SRC
+** Tangle certain org files on save
+#+BEGIN_SRC emacs-lisp
+  (defsubst funcs-into-hook (hook &rest func-list)
+    (dolist (func func-list) (add-hook hook func)))
+
+  (add-hook 'after-save-hook (lambda () (when (string-match
+                                          (rx
+                                           bos
+                                           (+ not-newline)
+                                           "/.emacs.d/"
+                                           (+ not-newline)
+                                           ".org")
+                                          buffer-file-name)
+                                     (org-babel-tangle))))
+#+END_SRC
+* Provide
+#+BEGIN_SRC emacs-lisp
+  (provide 'nkc-org)
+#+END_SRC

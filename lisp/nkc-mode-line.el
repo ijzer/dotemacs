@@ -1,3 +1,10 @@
+;; cl
+
+;; [[file:nkc-mode-line.org::*cl][cl:1]]
+(eval-when-compile
+  (use-package cl-lib))
+;; cl:1 ends here
+
 ;; use-package
 
 ;; [[file:nkc-mode-line.org::*use-package][use-package:1]]
@@ -36,7 +43,7 @@
     ,@(when window-system '(:tight)))
    line-column
    ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
-   (nkc/buffer-status buffer-id)
+   ((nkc/buffer-status nkc/buffer-id) :fallback buffer-id)
    version-control
    remote-host)
  '((org-clock :when active)
@@ -56,7 +63,7 @@
    ,@(when window-system '(:tight)))
   line-column
   ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
-  (nkc/buffer-status buffer-id)
+  ((nkc/buffer-status nkc/buffer-id) :fallback buffer-id)
   version-control
   remote-host)
 ;; spaceline-left ends here
@@ -83,7 +90,7 @@ Requires ace-window to be installed and ace-window-display mode to be
 set to true."
   (let* ((win (window-parameter (selected-window) 'ace-window-path)))
     (if spaceline-window-numbers-unicode
-        (spaceline--unicode-number win)
+	(spaceline--unicode-number win)
       win))
   :when (bound-and-true-p ace-window-display-mode))
 ;; ace\ window:1 ends here
@@ -119,26 +126,66 @@ set to true."
 
 ;; Version\ control:1 ends here
 
-;; Buffer ID
+;; Helper functions and variables
 
-;; [[file:nkc-mode-line.org::*Buffer%20ID][Buffer\ ID:1]]
-(defvar nkc/buffer-id-replacement-alist
+;; [[file:nkc-mode-line.org::*Helper%20functions%20and%20variables][Helper\ functions\ and\ variables:1]]
+(defvar nkc/buffer-file-replacement-alist
   `((,(rx "[*Org Src " (+ not-newline) "[ " (+ not-newline) "]*]") "")
     (,(rx "/home/" (+? not-newline) "/") "~/")
-    (,(rx "~/" (*? not-newline) "emacs" (*? not-newline) "/") ":ED:/")
-    (,(rx ":ED:/lisp/") "~el/")
-    (,(rx "~/" (+ not-newline) "doc" (+ not-newline) "org") "~org")))
+    (,user-emacs-directory "~emacs/")
+    (,(rx "~emacs/lisp/") "~elisp/")
+    (,(rx "~/" (+ not-newline) "doc" (+ not-newline) "org") "~org"))
+  "AList in the form ((regexp . replacement)) for applying to
+buffer-file-name to shorten it. Replacements are applied sequentially.")
 
-(defun nkc/buffer-id-replacement ()
-  (let ((str buffer-file-name))
-    (dolist (prefix nkc/buffer-id-replacement-alist)
-      (setq str (replace-regexp-in-string (car prefix) (cadr prefix) str)))
-    str))
+(defvar nkc/buffer-id-max-width 40 "Max width of buffer id displayed in mode line")
 
-;; before you try to implement this take a look at what
-;; smart-mode-line checks to see if doing the replacements is actually
-;; necessary.
-;; Buffer\ ID:1 ends here
+(defun nkc/replace-buffer-file (buffer-file)
+"Replace matches on buffer-file using nkc/buffer-file-replacement-alist"
+  (dolist (prefix nkc/buffer-file-replacement-alist)
+    (setq buffer-file (replace-regexp-in-string (car prefix)
+						(cadr prefix)
+						buffer-file)))
+  buffer-file)
+
+(defun nkc/shorten-buffer-file (buffer-file max)
+  "Shorten buffer-file to (length max) by replacing directory names with '…'"
+  (let* ((folders (split-string buffer-file "/"))
+	 (prefix (concat (pop folders) "/")))
+    (concat prefix (cl-reduce
+		    (apply-partially
+		     (lambda (max path segment)
+		       (if (not (string-match "…" path))
+			   (if (< max (+ (length path) (length segment)))
+			       (concat "…/" path)
+			     (concat segment "/" path))
+			 path))
+		     (- max (length prefix) 1))
+		    (reverse folders)))))
+
+(defvar nkc/buffer-file-name nil "File name of current buffer to check for changes")
+(make-variable-buffer-local 'nkc/buffer-file-name)
+(defvar nkc/buffer-id nil "Shortened buffer ID to display in mode line")
+(make-variable-buffer-local 'nkc/buffer-id)
+
+(defun nkc/update-buffer-id-maybe (buffer-file)
+  "Update buffer name for display if buffer-file-name has changed"
+  (unless (string= buffer-file nkc/buffer-file-name)
+    (setq nkc/buffer-file-name buffer-file)
+    (setq nkc/buffer-id (nkc/shorten-buffer-file
+			 (nkc/replace-buffer-file buffer-file)
+			 nkc/buffer-id-max-width)))
+  nkc/buffer-id)
+;; Helper\ functions\ and\ variables:1 ends here
+
+;; Segment definition
+
+;; [[file:nkc-mode-line.org::*Segment%20definition][Segment\ definition:1]]
+(spaceline-define-segment nkc/buffer-id
+  "Current buffer ID"
+  (nkc/update-buffer-id-maybe buffer-file-name)
+  :when buffer-file-name)
+;; Segment\ definition:1 ends here
 
 ;; Provide
 

@@ -136,24 +136,13 @@ set to true."
 
 (spaceline-define-segment nkc/version-control
   "Version control information"
-  (let ((mode vc-mode)
-	(state (vc-state buffer-file-name))
-	(backend (symbol-name (vc-backend buffer-file-name))))
+  (let* ((mode vc-mode)
+	 (backend (vc-backend buffer-file-name))
+	 (state (vc-state-refresh buffer-file-name backend)))
     (concat (cdr (assoc state nkc/vc-state-char-alist))
 	    (replace-regexp-in-string
-	     (format  "\\` \\(%s[-!:?@]\\)" backend) "" mode)))
+	     (format  "\\` \\(%s[-!:?@]\\)" (symbol-name backend)) "" mode)))
   :when (and vc-mode buffer-file-name))
-
-(defun nkc/version-control ()
-  "Version control information"
-  (let ((mode "Git:master")
-	(state 'needs-update)
-	(backend "Git"))
-    (concat (cdr (assoc state nkc/vc-state-char-alist))
-	    (replace-regexp-in-string
-	     (format  "\\`\\(%s[-!:?@]\\)" backend) "" mode))))
-
-(nkc/version-control)
 ;; Version\ control:1 ends here
 
 ;; Helper functions and variables

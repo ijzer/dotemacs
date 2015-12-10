@@ -14,6 +14,7 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
 #+END_SRC
 ** use-package
 #+BEGIN_SRC emacs-lisp
+
   (require 'use-package)
 #+END_SRC
 ** smart-mode-line
@@ -122,25 +123,13 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
 
   (spaceline-define-segment nkc/version-control
     "Version control information"
-    (let ((mode vc-mode)
-	  (state (vc-state buffer-file-name))
-	  (backend (symbol-name (vc-backend buffer-file-name))))
+    (let* ((mode vc-mode)
+	   (backend (vc-backend buffer-file-name))
+	   (state (vc-state-refresh buffer-file-name backend)))
       (concat (cdr (assoc state nkc/vc-state-char-alist))
 	      (replace-regexp-in-string
-	       (format  "\\` \\(%s[-!:?@]\\)" backend) "" mode)))
+	       (format  "\\` \\(%s[-!:?@]\\)" (symbol-name backend)) "" mode)))
     :when (and vc-mode buffer-file-name))
-
-  (defun nkc/version-control ()
-    "Version control information"
-    (let ((mode "Git:master")
-	  (state 'needs-update)
-	  (backend "Git"))
-      (concat (cdr (assoc state nkc/vc-state-char-alist))
-	      (replace-regexp-in-string
-	       (format  "\\`\\(%s[-!:?@]\\)" backend) "" mode))))
-
-  (nkc/version-control)
-
 #+END_SRC
 *** Buffer ID
 **** Helper functions and variables
@@ -205,6 +194,3 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-mode-line)
 #+END_SRC
-
-
-(symbol-name (vc-backend buffer-file-name))

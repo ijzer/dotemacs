@@ -25,5 +25,5 @@
 (depends-on "swiper-helm")
 (depends-on "use-package")
 ;;;pallet-ignore
-(depends-on "info+" :git "https://github.com/emacsmirror/emacswiki.org/tree/master" :files "info+.el")
+(depends-on "info+" :git "https://github.com/emacsmirror/info-plus")
 (depends-on "solarized" :git "https://github.com/sellout/emacs-color-theme-solarized.git")

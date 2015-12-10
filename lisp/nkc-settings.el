@@ -40,10 +40,15 @@
 
 ;; Backups:1 ends here
 
+;; Mode line
+;;    My mode line edits got a little out of hand.
+
+;; [[file:nkc-settings.org::*Mode%20line][Mode\ line:1]]
+(use-package nkc-mode-line)
+;; Mode\ line:1 ends here
+
 ;; Provide
 
-;; [[file:~/.emacs.d/lisp/nkc-settings.org::*Provide][Provide:1]]
-
+;; [[file:nkc-settings.org::*Provide][Provide:1]]
 (provide 'nkc-settings)
-
 ;; Provide:1 ends here

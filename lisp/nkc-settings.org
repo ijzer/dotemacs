@@ -33,6 +33,11 @@ files. Nothing fancy I'm afraid.
         vc-make-backup-files t
         backup-by-copying t)
 #+END_SRC
+** Mode line
+   My mode line edits got a little out of hand.
+#+BEGIN_SRC emacs-lisp
+  (use-package nkc-mode-line)
+#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-settings)

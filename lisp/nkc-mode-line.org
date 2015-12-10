@@ -48,7 +48,7 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
      :face highlight-face
      ,@(when window-system '(:tight)))
     line-column
-    ,@(if window-system '(hud) '(buffer-position))
+    ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
     (nkc/buffer-status buffer-id)
     version-control
     remote-host)
@@ -106,4 +106,26 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
 #+BEGIN_SRC emacs-lisp
 
 #+END_SRC
+*** Buffer ID
+#+BEGIN_SRC emacs-lisp
+  (defvar nkc/buffer-id-replacement-alist
+    `((,(rx "[*Org Src " (+ not-newline) "[ " (+ not-newline) "]*]") "")
+      (,(rx "/home/" (+? not-newline) "/") "~/")
+      (,(rx "~/" (*? not-newline) "emacs" (*? not-newline) "/") ":ED:/")
+      (,(rx ":ED:/lisp/") "~el/")
+      (,(rx "~/" (+ not-newline) "doc" (+ not-newline) "org") "~org")))
 
+  (defun nkc/buffer-id-replacement ()
+    (let ((str buffer-file-name))
+      (dolist (prefix nkc/buffer-id-replacement-alist)
+        (setq str (replace-regexp-in-string (car prefix) (cadr prefix) str)))
+      str))
+
+  ;; before you try to implement this take a look at what
+  ;; smart-mode-line checks to see if doing the replacements is actually
+  ;; necessary. 
+#+END_SRC
+* Provide
+#+BEGIN_SRC emacs-lisp
+  (provide 'nkc-mode-line)
+#+END_SRC

@@ -43,8 +43,8 @@
     ,@(when window-system '(:tight)))
    line-column
    ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
-   ((nkc/buffer-status nkc/buffer-id) :fallback buffer-id)
-   version-control
+   ((nkc/version-control :fallback nkc/buffer-status)
+    (nkc/buffer-id :fallback buffer-id))
    remote-host)
  '((org-clock :when active)
    major-mode
@@ -63,8 +63,8 @@
    ,@(when window-system '(:tight)))
   line-column
   ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
-  ((nkc/buffer-status nkc/buffer-id) :fallback buffer-id)
-  version-control
+  ((nkc/version-control :fallback nkc/buffer-status)
+   (nkc/buffer-id :fallback buffer-id))
   remote-host)
 ;; spaceline-left ends here
 
@@ -123,7 +123,37 @@ set to true."
 ;;     propertize, which i'm fairly sure it does.
 
 ;; [[file:nkc-mode-line.org::*Version%20control][Version\ control:1]]
+(defvar nkc/vc-state-char-alist
+  '((up-to-date . "-")
+    (edited . "~")
+    (needs-update . "∆")
+    (needs-merge . "∇")
+    (added . "+")
+    (removed . "×")
+    (conflict . "!")
+    (missing . "?")
+    (unregistered . "??")))
 
+(spaceline-define-segment nkc/version-control
+  "Version control information"
+  (let ((mode vc-mode)
+	(state (vc-state buffer-file-name))
+	(backend (symbol-name (vc-backend buffer-file-name))))
+    (concat (cdr (assoc state nkc/vc-state-char-alist))
+	    (replace-regexp-in-string
+	     (format  "\\` \\(%s[-!:?@]\\)" backend) "" mode)))
+  :when (and vc-mode buffer-file-name))
+
+(defun nkc/version-control ()
+  "Version control information"
+  (let ((mode "Git:master")
+	(state 'needs-update)
+	(backend "Git"))
+    (concat (cdr (assoc state nkc/vc-state-char-alist))
+	    (replace-regexp-in-string
+	     (format  "\\`\\(%s[-!:?@]\\)" backend) "" mode))))
+
+(nkc/version-control)
 ;; Version\ control:1 ends here
 
 ;; Helper functions and variables

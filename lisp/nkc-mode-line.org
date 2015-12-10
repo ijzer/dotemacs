@@ -111,7 +111,7 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
     propertize, which i'm fairly sure it does.
 #+BEGIN_SRC emacs-lisp
   (defvar nkc/vc-state-char-alist
-    '((up-to-date . "-")
+    '((up-to-date . "")
       (edited . "~")
       (needs-update . "∆")
       (needs-merge . "∇")

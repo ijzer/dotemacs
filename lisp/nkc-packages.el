@@ -32,7 +32,8 @@
 ;; Generic
 
 ;; [[file:nkc-packages.org::*Generic][Generic:1]]
-(auto-fill-mode)
+(setq-default fill-column 75
+	      auto-fill-function 'do-auto-fill)
 ;; Generic:1 ends here
 
 ;; Lispy

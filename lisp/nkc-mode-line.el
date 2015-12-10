@@ -124,7 +124,7 @@ set to true."
 
 ;; [[file:nkc-mode-line.org::*Version%20control][Version\ control:1]]
 (defvar nkc/vc-state-char-alist
-  '((up-to-date . "-")
+  '((up-to-date . "")
     (edited . "~")
     (needs-update . "∆")
     (needs-merge . "∇")

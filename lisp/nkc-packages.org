@@ -36,7 +36,8 @@ all the autoload stuff but it's still nice to make it explicit.
 * Modes
 ** Generic
 #+BEGIN_SRC emacs-lisp
-  (auto-fill-mode)
+  (setq-default fill-column 75
+		auto-fill-function 'do-auto-fill)
 #+END_SRC
 ** Lisp
 *** Packages

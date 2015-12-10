@@ -13,6 +13,13 @@ all the autoload stuff but it's still nice to make it explicit.
 ** Helper functions
    These are just helpers for package loading. If they help other
    stuff they oughta go somewhere else.
+*** hook-into-modes
+    stolen from [[https://github.com/jwiegley/dot-emacs][jww's dot emacs]]. adds a function to each of a list of
+    modes. needs to be used with apply.
+#+BEGIN_SRC emacs-lisp
+  (defsubst hook-into-modes (func &rest modes)
+    (dolist (mode-hook modes) (add-hook mode-hook func)))
+#+END_SRC
 * Packages
 ** Magit
    [[https://github.com/magit/magit][github]] [[http://magit.vc/manual/][manual]]
@@ -22,7 +29,63 @@ all the autoload stuff but it's still nice to make it explicit.
            ("C-c g p" . magit-pull)))
 #+END_SRC
 ** TODO Tramp
+* Org
+#+BEGIN_SRC emacs-lisp
+  (use-package nkc-org)
+#+END_SRC
 * Modes
+** Generic
+#+BEGIN_SRC emacs-lisp
+  (auto-fill-mode)
+#+END_SRC
+** Lisp
+*** Packages
+**** Lispy
+     [[https://github.com/abo-abo/lispy][github]]
+#+BEGIN_SRC emacs-lisp
+  (use-package lispy
+    :defer t)
+#+END_SRC
+*** Hooks
+**** Lisp editing modes
+     Sets up a hook to turn on various good things when using a lisp
+     mode. Add additional modes to lisp-modes if needed.
+#+BEGIN_SRC emacs-lisp
+  (defvar lisp-modes '(emacs-lisp-mode
+                       inferior-emacs-lisp-mode
+                       ielm-mode
+                       lisp-mode
+                       inferior-lisp-mode
+                       lisp-interaction-mode))
+  (defvar lisp-mode-hooks
+    (mapcar (lambda (mode)
+              (intern
+               (concat (symbol-name mode) "-hook")))
+            lisp-modes))
+
+  (defvar lisp-mode-initialized nil)
+
+  (defun nkc/lisp-mode-hook ()
+    (unless lisp-mode-initialized
+      (setq lisp-mode-initialized t))
+
+    (add-hook 'after-save-hook 'check-parens nil t)
+    (eldoc-mode)
+    (lispy-mode 1)
+
+    (font-lock-add-keywords
+     nil
+     `((,(rx "(" symbol-start (group "lambda") symbol-end " (")
+        (0 (ignore
+            (compose-region (match-beginning 1)
+                            (match-end 1) ?λ)))))))
+
+  (apply #'hook-into-modes 'nkc/lisp-mode-hook lisp-mode-hooks)
+#+END_SRC
+**** Minibuffer evals
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
 * Themes
 ** Solarized
    [[https://github.com/sellout/emacs-color-theme-solarized][github]]

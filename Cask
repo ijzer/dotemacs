@@ -16,6 +16,7 @@
 (depends-on "key-chord")
 (depends-on "lispy")
 (depends-on "magit")
+(depends-on "multiple-cursors")
 (depends-on "org")
 (depends-on "org-plus-contrib")
 (depends-on "pallet")

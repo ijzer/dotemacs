@@ -5,6 +5,7 @@ files. Nothing fancy I'm afraid.
 
 * Emacs
 ** UI Changes
+*** GUI
    The mouse is the devil in emacs. Someday I'll figure out how to get
    rid of the damn thing entirely. It'll be beautiful, lemme tell you.
 #+BEGIN_SRC emacs-lisp
@@ -14,6 +15,12 @@ files. Nothing fancy I'm afraid.
   (scroll-bar-mode -1)
   (setq inhibit-startup-screen t
         use-dialog-box nil)
+#+END_SRC
+*** Font
+#+BEGIN_SRC emacs-lisp
+  (if (eq window-system 'w32)
+      (add-to-list 'default-frame-alist
+                   '(font . "Meslo LG S-10")))
 #+END_SRC
 ** Backups
    emacs likes to strew backup and autosave files everywhere. They

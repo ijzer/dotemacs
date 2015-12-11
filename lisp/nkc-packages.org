@@ -68,11 +68,18 @@ all the autoload stuff but it's still nice to make it explicit.
 
   (defun nkc/lisp-mode-hook ()
     (unless lisp-mode-initialized
-      (setq lisp-mode-initialized t))
+      (setq lisp-mode-initialized t)
+    
+      (info-lookmore-elisp-userlast)
+      (info-lookmore-elisp-cl))
 
     (add-hook 'after-save-hook 'check-parens nil t)
     (eldoc-mode)
     (lispy-mode 1)
+    (show-paren-mode)
+
+  
+
 
     (font-lock-add-keywords
      nil

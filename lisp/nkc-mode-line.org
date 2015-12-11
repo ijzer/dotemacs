@@ -177,8 +177,10 @@ while remaining readable.
 #+BEGIN_SRC emacs-lisp
   (spaceline-define-segment nkc/buffer-id
     "Current buffer ID"
-    (nkc/update-buffer-id-maybe buffer-file-name)
-    :when buffer-file-name)  
+    (cond
+     (buffer-file-name (nkc/update-buffer-id-maybe buffer-file-name))
+     ((buffer-name) (buffer-name)))
+    :when (or buffer-file-name (buffer-name)))  
 #+END_SRC
 *** Minor modes
 #+BEGIN_SRC emacs-lisp

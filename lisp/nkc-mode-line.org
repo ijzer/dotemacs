@@ -12,7 +12,6 @@ while remaining readable.
 #+END_SRC
 ** use-package
 #+BEGIN_SRC emacs-lisp
-
   (require 'use-package)
 #+END_SRC
 ** spaceline
@@ -43,10 +42,10 @@ while remaining readable.
      :face highlight-face
      ,@(when window-system '(:tight)))
     line-column
-    ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
+    buffer-position
+    remote-host
     (nkc/buffer-status nkc/vc-branch)
-    (nkc/buffer-id :fallback buffer-id)
-    remote-host)
+    (nkc/buffer-id :fallback buffer-id))
 #+END_SRC
 ** Right 
    This blocks out the spaceline segments the right side of the
@@ -55,8 +54,9 @@ while remaining readable.
 #+NAME: spaceline-right
 #+BEGIN_SRC emacs-lisp :tangle no
   '((org-clock :when active)
+    global
     major-mode
-    (minor-modes :when active))
+    (nkc/minor-modes :when active))
 #+END_SRC
 ** Segment Definitions
    We need to add some segments and to rewrite default segments to

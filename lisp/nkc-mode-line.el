@@ -31,13 +31,14 @@
     :face highlight-face
     ,@(when window-system '(:tight)))
    line-column
-   ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
+   buffer-position
+   remote-host
    (nkc/buffer-status nkc/vc-branch)
-   (nkc/buffer-id :fallback buffer-id)
-   remote-host)
+   (nkc/buffer-id :fallback buffer-id))
  '((org-clock :when active)
+   global
    major-mode
-   (minor-modes :when active)))
+   (nkc/minor-modes :when active)))
 ;; Use\ Spaceline:1 ends here
 
 ;; ace window
@@ -50,7 +51,7 @@ Requires ace-window to be installed and ace-window-display mode to be
 set to true."
   (let* ((win (window-parameter (selected-window) 'ace-window-path)))
     (if spaceline-window-numbers-unicode
-        (spaceline--unicode-number win)
+	(spaceline--unicode-number win)
       win))
   :when (bound-and-true-p ace-window-display-mode))
 ;; ace\ window:1 ends here
@@ -125,24 +126,24 @@ buffer-file-name to shorten it. Replacements are applied sequentially.")
 "Replace matches on buffer-file using nkc/buffer-file-replacement-alist"
   (dolist (prefix nkc/buffer-file-replacement-alist)
     (setq buffer-file (replace-regexp-in-string (car prefix)
-                                                (cadr prefix)
-                                                buffer-file)))
+						(cadr prefix)
+						buffer-file)))
   buffer-file)
 
 (defun nkc/shorten-buffer-file (buffer-file max)
   "Shorten buffer-file to (length max) by replacing directory names with '…'"
   (let* ((folders (split-string buffer-file "/"))
-         (prefix (concat (pop folders) "/")))
+	 (prefix (concat (pop folders) "/")))
     (concat prefix (cl-reduce
-                    (apply-partially
-                     (lambda (max path segment)
-                       (if (not (string-match "…" path))
-                           (if (< max (+ (length path) (length segment)))
-                               (concat "…/" path)
-                             (concat segment "/" path))
-                         path))
-                     (- max (length prefix) 1))
-                    (reverse folders)))))
+		    (apply-partially
+		     (lambda (max path segment)
+		       (if (not (string-match "…" path))
+			   (if (< max (+ (length path) (length segment)))
+			       (concat "…/" path)
+			     (concat segment "/" path))
+			 path))
+		     (- max (length prefix) 1))
+		    (reverse folders)))))
 
 (defvar nkc/buffer-file-name nil "File name of current buffer to check for changes")
 (make-variable-buffer-local 'nkc/buffer-file-name)
@@ -154,8 +155,8 @@ buffer-file-name to shorten it. Replacements are applied sequentially.")
   (unless (string= buffer-file nkc/buffer-file-name)
     (setq nkc/buffer-file-name buffer-file)
     (setq nkc/buffer-id (nkc/shorten-buffer-file
-                         (nkc/replace-buffer-file buffer-file)
-                         nkc/buffer-id-max-width)))
+			 (nkc/replace-buffer-file buffer-file)
+			 nkc/buffer-id-max-width)))
   nkc/buffer-id)
 ;; Helper\ functions\ and\ variables:1 ends here
 
@@ -167,6 +168,52 @@ buffer-file-name to shorten it. Replacements are applied sequentially.")
   (nkc/update-buffer-id-maybe buffer-file-name)
   :when buffer-file-name)
 ;; Segment\ definition:1 ends here
+
+;; Minor modes
+
+;; [[file:nkc-mode-line.org::*Minor%20modes][Minor\ modes:1]]
+(defvar nkc/minor-mode-replacer-alist '((auto-fill-function "↴")
+					(visual-line-mode "↲")
+					(helm-mode "")
+					(lispy-mode "Lispy")
+					(org-src-mode "Src")
+					(eldoc-mode "")
+					(edebug-mode "∑")
+					(visible-mode "V")
+					(overwrite-mode "<")
+					(isearch-mode "")
+					(abbrev-mode "𝛂")
+					(doc-view-minor-mode "Doc")
+					(image-minor-mode (:eval
+							   (if image-type
+							       image-type
+							     "Img"))))
+  "Alist of (MODE . LIGHTER) to replace those given in minor-mode-alist")
+
+(defun nkc/minor-mode-replacer (mode lighter)
+  (let ((replacer (cadr (assoc mode nkc/minor-mode-replacer-alist))))
+    (if replacer
+	replacer
+      lighter)))
+
+(spaceline-define-segment nkc/minor-modes
+  "A list of minor modes. Configure the separator with 'spaceline-minor-modes-separator and the lighters with nkc/minor-mode-replacer-alist"
+  (-filter
+   (lambda (k) (s-present? k))
+   (mapcar (lambda (mm)
+	     (let* ((mode (car mm))
+		    (lighter (cadr mm))
+		    (displayp (and (boundp mode)
+				   (symbol-value mode)))
+		    (lighter (when displayp
+			       (nkc/minor-mode-replacer
+				mode (s-trim (format-mode-line lighter)))))
+		    (displayp (s-present? lighter)))
+	       (when displayp
+		 lighter)))
+	   minor-mode-alist))
+  :separator spaceline-minor-modes-separator)
+;; Minor\ modes:1 ends here
 
 ;; Provide
 

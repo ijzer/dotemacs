@@ -23,6 +23,45 @@
          ("C-c g p" . magit-pull)))
 ;; Magit:1 ends here
 
+;; helm-config
+
+;; [[file:nkc-packages.org::*helm-config][helm-config:1]]
+(use-package helm-config
+  :demand t
+  :bind (("M-x" . helm-M-x)
+	 ("C-h a" . helm-apropos)
+	 ("C-x b" . helm-mini)
+	 ("C-x C-f" . helm-find-files)
+	 ("C-c h" . helm-command-prefix)
+	 ("C-c h o" . helm-occur)
+	 ("C-c h r" . helm-regexp)
+	 ("C-c h x" . helm-resume)
+	 ("C-c h y" . helm-show-kill-ring))
+  :init (unbind-key "C-x c")
+  :config
+  (require 'async-bytecomp)
+  (bind-keys :map helm-map
+	     ("<tab>" . helm-execute-persistent-action)
+	     ("C-i" . helm-execute-persisten-action)
+	     ("C-z" . helm-select-action))
+
+  (helm-auto-resize-mode 1)
+
+  (when (executable-find "curl") (setq helm-google-suggest-use-curl-p t))
+
+  (use-package hel)m
+
+  (helm-mode 1))
+;; helm-config:1 ends here
+
+;; helm-descbinds
+
+;; [[file:nkc-packages.org::*helm-descbinds][helm-descbinds:1]]
+(use-package helm-descbinds
+  :bind ("C-h b" . helm-descbinds)
+  :config (require 'helmconfig))
+;; helm-descbinds:1 ends here
+
 ;; Org
 
 ;; [[file:nkc-packages.org::*Org][Org:1]]

@@ -29,13 +29,6 @@
 (use-package nkc-org)
 ;; Org:1 ends here
 
-;; Generic
-
-;; [[file:nkc-packages.org::*Generic][Generic:1]]
-(setq-default fill-column 75
-              auto-fill-function 'do-auto-fill)
-;; Generic:1 ends here
-
 ;; Lispy
 ;;      [[https://github.com/abo-abo/lispy][github]]
 
@@ -66,12 +59,12 @@
 (defun nkc/lisp-mode-hook ()
   (unless lisp-mode-initialized
     (setq lisp-mode-initialized t)
-  
+
     (info-lookmore-elisp-userlast)
     (info-lookmore-elisp-cl))
 
   (add-hook 'after-save-hook 'check-parens nil t)
-  (eldoc-mode)
+  (eldoc-mode 1)
   (lispy-mode 1)
   (show-paren-mode)
 

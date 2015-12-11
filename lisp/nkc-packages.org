@@ -34,11 +34,6 @@ all the autoload stuff but it's still nice to make it explicit.
   (use-package nkc-org)
 #+END_SRC
 * Modes
-** Generic
-#+BEGIN_SRC emacs-lisp
-  (setq-default fill-column 75
-		auto-fill-function 'do-auto-fill)
-#+END_SRC
 ** Lisp
 *** Packages
 **** Lispy
@@ -74,7 +69,7 @@ all the autoload stuff but it's still nice to make it explicit.
       (info-lookmore-elisp-cl))
 
     (add-hook 'after-save-hook 'check-parens nil t)
-    (eldoc-mode)
+    (eldoc-mode 1)
     (lispy-mode 1)
     (show-paren-mode)
 

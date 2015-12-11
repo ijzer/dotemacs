@@ -49,6 +49,19 @@
 (use-package nkc-mode-line)
 ;; Mode\ line:1 ends here
 
+;; autofill
+
+;; [[file:nkc-settings.org::*autofill][autofill:1]]
+(setq-default fill-column 75
+	      auto-fill-function 'do-auto-fill)
+;; autofill:1 ends here
+
+;; Visual line mode
+
+;; [[file:nkc-settings.org::*Visual%20line%20mode][Visual\ line\ mode:1]]
+(visual-line-mode)
+;; Visual\ line\ mode:1 ends here
+
 ;; Provide
 
 ;; [[file:nkc-settings.org::*Provide][Provide:1]]

@@ -45,6 +45,16 @@ files. Nothing fancy I'm afraid.
 #+BEGIN_SRC emacs-lisp
   (use-package nkc-mode-line)
 #+END_SRC
+* Settings
+** autofill
+#+BEGIN_SRC emacs-lisp
+  (setq-default fill-column 75
+		auto-fill-function 'do-auto-fill)
+#+END_SRC
+** Visual line mode
+#+BEGIN_SRC emacs-lisp
+  (visual-line-mode)
+#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-settings)

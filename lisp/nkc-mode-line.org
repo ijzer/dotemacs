@@ -178,8 +178,51 @@ while remaining readable.
   (spaceline-define-segment nkc/buffer-id
     "Current buffer ID"
     (nkc/update-buffer-id-maybe buffer-file-name)
-    :when buffer-file-name)
-  
+    :when buffer-file-name)  
+#+END_SRC
+*** Minor modes
+#+BEGIN_SRC emacs-lisp
+  (defvar nkc/minor-mode-replacer-alist '((auto-fill-function "↴")
+					  (visual-line-mode "↲")
+					  (helm-mode "")
+					  (lispy-mode "Lispy")
+					  (org-src-mode "Src")
+					  (eldoc-mode "")
+					  (edebug-mode "∑")
+					  (visible-mode "V")
+					  (overwrite-mode "<")
+					  (isearch-mode "")
+					  (abbrev-mode "𝛂")
+					  (doc-view-minor-mode "Doc")
+					  (image-minor-mode (:eval
+							     (if image-type
+								 image-type
+							       "Img"))))
+    "Alist of (MODE . LIGHTER) to replace those given in minor-mode-alist")
+
+  (defun nkc/minor-mode-replacer (mode lighter)
+    (let ((replacer (cadr (assoc mode nkc/minor-mode-replacer-alist))))
+      (if replacer
+	  replacer
+	lighter)))
+
+  (spaceline-define-segment nkc/minor-modes
+    "A list of minor modes. Configure the separator with 'spaceline-minor-modes-separator and the lighters with nkc/minor-mode-replacer-alist"
+    (-filter
+     (lambda (k) (s-present? k))
+     (mapcar (lambda (mm)
+	       (let* ((mode (car mm))
+		      (lighter (cadr mm))
+		      (displayp (and (boundp mode)
+				     (symbol-value mode)))
+		      (lighter (when displayp
+				 (nkc/minor-mode-replacer
+				  mode (s-trim (format-mode-line lighter)))))
+		      (displayp (s-present? lighter)))
+		 (when displayp
+		   lighter)))
+	     minor-mode-alist))
+    :separator spaceline-minor-modes-separator)
 #+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp

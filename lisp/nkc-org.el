@@ -45,6 +45,13 @@
                                    (org-babel-tangle))))
 ;; Tangle\ certain\ org\ files\ on\ save:1 ends here
 
+;; Use eldoc with org files
+
+;; [[file:nkc-org.org::*Use%20eldoc%20with%20org%20files][Use\ eldoc\ with\ org\ files:1]]
+(add-hook 'org-mode-hook #'org-eldoc-load)
+(add-hook 'org-mode-hook #'eldoc-mode)
+;; Use\ eldoc\ with\ org\ files:1 ends here
+
 ;; Provide
 
 ;; [[file:nkc-org.org::*Provide][Provide:1]]

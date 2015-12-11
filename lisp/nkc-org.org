@@ -43,6 +43,11 @@
                                           buffer-file-name)
                                      (org-babel-tangle))))
 #+END_SRC
+** Use eldoc with org files
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook #'org-eldoc-load)
+  (add-hook 'org-mode-hook #'eldoc-mode)
+#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-org)

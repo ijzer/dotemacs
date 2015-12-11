@@ -48,6 +48,13 @@
   (add-hook 'org-mode-hook #'org-eldoc-load)
   (add-hook 'org-mode-hook #'eldoc-mode)
 #+END_SRC
+** Don't ask for confirmation on evaluates
+#+BEGIN_SRC emacs-lisp
+  (setq org-confirm-babel-evaluate (lambda (lang body)
+				     (cond
+				      ((string= lang "emacs-lisp") nil)
+				      (t t))))
+#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-org)

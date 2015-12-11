@@ -52,6 +52,15 @@
 (add-hook 'org-mode-hook #'eldoc-mode)
 ;; Use\ eldoc\ with\ org\ files:1 ends here
 
+;; Don't ask for confirmation on evaluates
+
+;; [[file:nkc-org.org::*Don't%20ask%20for%20confirmation%20on%20evaluates][Don\'t\ ask\ for\ confirmation\ on\ evaluates:1]]
+(setq org-confirm-babel-evaluate (lambda (lang body)
+				   (cond
+				    ((string= lang "emacs-lisp") nil)
+				    (t t))))
+;; Don\'t\ ask\ for\ confirmation\ on\ evaluates:1 ends here
+
 ;; Provide
 
 ;; [[file:nkc-org.org::*Provide][Provide:1]]

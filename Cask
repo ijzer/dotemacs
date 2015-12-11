@@ -20,11 +20,11 @@
 (depends-on "org")
 (depends-on "org-plus-contrib")
 (depends-on "pallet")
-(depends-on "smart-mode-line")
 (depends-on "smart-tabs-mode")
 (depends-on "spaceline")
 (depends-on "swiper-helm")
 (depends-on "use-package")
 ;;;pallet-ignore
+(depends-on "info-lookmore" :git "https://github.com/emacsmirror/info-lookmore")
 (depends-on "info+" :git "https://github.com/emacsmirror/info-plus")
-(depends-on "solarized" :git "https://github.com/sellout/emacs-color-theme-solarized.git")
+(depends-on "solarized" :git "https://github.com/sellout/emacs-color-theme-solarized")

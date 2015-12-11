@@ -11,17 +11,6 @@
 (require 'use-package)
 ;; use-package:1 ends here
 
-;; smart-mode-line
-;;    [[https://github.com/Malabarba/smart-mode-line][github]]
-;;    setting sml/theme to nil limits the colorizing sml adds to the
-;;    modeline, which makes things a bit easier. calling sml/setup adds
-;;    some useful hooks even though we're going to be rewriting a lot of
-;;    the modeline variables sml sets up.
-
-;; [[file:nkc-mode-line.org::*smart-mode-line][smart-mode-line:1]]
-(use-package smart-mode-line)
-;; smart-mode-line:1 ends here
-
 ;; spaceline
 ;;    [[https://github.com/TheBB/spaceline][github]]
 
@@ -43,42 +32,13 @@
     ,@(when window-system '(:tight)))
    line-column
    ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
-   ((nkc/version-control :fallback nkc/buffer-status)
-    (nkc/buffer-id :fallback buffer-id))
+   (nkc/buffer-status nkc/vc-branch)
+   (nkc/buffer-id :fallback buffer-id)
    remote-host)
  '((org-clock :when active)
    major-mode
    (minor-modes :when active)))
 ;; Use\ Spaceline:1 ends here
-
-;; Left
-;;    This blocks out the spaceline segments the left side of the
-;;    mode line will use. Segment definitions can be found by searching
-;;    for spaceline--segment-{name}. 
-;; #+NAME: spaceline-left
-
-;; [[file:nkc-mode-line.org::*Left][spaceline-left]]
-`((nkc/ace-window
-   :face highlight-face
-   ,@(when window-system '(:tight)))
-  line-column
-  ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
-  ((nkc/version-control :fallback nkc/buffer-status)
-   (nkc/buffer-id :fallback buffer-id))
-  remote-host)
-;; spaceline-left ends here
-
-;; Right 
-;;    This blocks out the spaceline segments the right side of the
-;;    mode line will use. Segment definitions can be found by searching
-;;    for spaceline--segment-{name}.
-;; #+NAME: spaceline-right
-
-;; [[file:nkc-mode-line.org::*Right][spaceline-right]]
-'((org-clock :when active)
-  major-mode
-  (minor-modes :when active))
-;; spaceline-right ends here
 
 ;; ace window
 ;;     Gives the value of the window for selecting with ace-window
@@ -90,7 +50,7 @@ Requires ace-window to be installed and ace-window-display mode to be
 set to true."
   (let* ((win (window-parameter (selected-window) 'ace-window-path)))
     (if spaceline-window-numbers-unicode
-	(spaceline--unicode-number win)
+        (spaceline--unicode-number win)
       win))
   :when (bound-and-true-p ace-window-display-mode))
 ;; ace\ window:1 ends here
@@ -98,31 +58,26 @@ set to true."
 ;; Modified buffers
 
 ;; [[file:nkc-mode-line.org::*Modified%20buffers][Modified\ buffers:1]]
-(defvar nkc/buffer-status-read-only-char "R"
-  "Character to display in modeline if buffer is read-only")
-(defvar nkc/buffer-status-not-modified-char ""
-  "Character to display in modeline if buffer is not modified")
-(defvar nkc/buffer-status-modified-char "~"
-  "Character to display in modeline if buffer is modified")
-(defvar nkc/buffer-status-modified-outside-char "!"
-  "Character to display in modeline if buffer was modified outside emacs")
+(defvar nkc/buffer-status-alist
+  '((read-only . "R")
+    (not-modified . "")
+    (modified . "~")
+    (modified-outside . "~")))
 
 (spaceline-define-segment nkc/buffer-status
   "Displays a character depending on the status of the buffer."
-  (cond
-   ((buffer-stale--default-function) nkc/buffer-status-modified-outside-char)
-   (buffer-read-only nkc/buffer-status-read-only-char)
-   ((buffer-modified-p) nkc/buffer-status-modified-char)
-   (t nkc/buffer-status-not-modified-char)))
+  (cdr (assoc
+        (cond
+         ((buffer-stale--default-function) 'modified-outside)
+         (buffer-read-only 'read-only)
+         ((buffer-modified-p) 'modified)
+         (t 'not-modified))
+        nkc/buffer-status-alist)))
 ;; Modified\ buffers:1 ends here
 
-;; Version control
-;;     vc-mode gives us useful info but takes up a ton of space.
-;;     look at [[https://zavoloklom.github.io/material-design-iconic-font/cheatsheet.html][material design iconic font]] for things to display under a
-;;     windowing system. assuming emacs has a way to add fonts with
-;;     propertize, which i'm fairly sure it does.
+;; vc status
 
-;; [[file:nkc-mode-line.org::*Version%20control][Version\ control:1]]
+;; [[file:nkc-mode-line.org::*vc%20status][vc\ status:1]]
 (defvar nkc/vc-state-char-alist
   '((up-to-date . "")
     (edited . "~")
@@ -134,16 +89,23 @@ set to true."
     (missing . "?")
     (unregistered . "??")))
 
-(spaceline-define-segment nkc/version-control
+(spaceline-define-segment nkc/vc-state
+  (let* ((backend (vc-backend buffer-file-name))
+         (state (vc-state-refresh buffer-file-name backend)))
+    (cdr (assoc state nkc/vc-state-char-alist))))
+;; vc\ status:1 ends here
+
+;; vc branch
+
+;; [[file:nkc-mode-line.org::*vc%20branch][vc\ branch:1]]
+(spaceline-define-segment nkc/vc-branch
   "Version control information"
   (let* ((mode vc-mode)
-	 (backend (vc-backend buffer-file-name))
-	 (state (vc-state-refresh buffer-file-name backend)))
-    (concat (cdr (assoc state nkc/vc-state-char-alist))
-	    (replace-regexp-in-string
-	     (format  "\\` \\(%s[-!:?@]\\)" (symbol-name backend)) "" mode)))
+         (backend (vc-backend buffer-file-name)))
+    (replace-regexp-in-string
+     (format  "\\` \\(%s[-!:?@]\\)" (symbol-name backend)) "" mode))
   :when (and vc-mode buffer-file-name))
-;; Version\ control:1 ends here
+;; vc\ branch:1 ends here
 
 ;; Helper functions and variables
 
@@ -163,24 +125,24 @@ buffer-file-name to shorten it. Replacements are applied sequentially.")
 "Replace matches on buffer-file using nkc/buffer-file-replacement-alist"
   (dolist (prefix nkc/buffer-file-replacement-alist)
     (setq buffer-file (replace-regexp-in-string (car prefix)
-						(cadr prefix)
-						buffer-file)))
+                                                (cadr prefix)
+                                                buffer-file)))
   buffer-file)
 
 (defun nkc/shorten-buffer-file (buffer-file max)
   "Shorten buffer-file to (length max) by replacing directory names with '…'"
   (let* ((folders (split-string buffer-file "/"))
-	 (prefix (concat (pop folders) "/")))
+         (prefix (concat (pop folders) "/")))
     (concat prefix (cl-reduce
-		    (apply-partially
-		     (lambda (max path segment)
-		       (if (not (string-match "…" path))
-			   (if (< max (+ (length path) (length segment)))
-			       (concat "…/" path)
-			     (concat segment "/" path))
-			 path))
-		     (- max (length prefix) 1))
-		    (reverse folders)))))
+                    (apply-partially
+                     (lambda (max path segment)
+                       (if (not (string-match "…" path))
+                           (if (< max (+ (length path) (length segment)))
+                               (concat "…/" path)
+                             (concat segment "/" path))
+                         path))
+                     (- max (length prefix) 1))
+                    (reverse folders)))))
 
 (defvar nkc/buffer-file-name nil "File name of current buffer to check for changes")
 (make-variable-buffer-local 'nkc/buffer-file-name)
@@ -192,8 +154,8 @@ buffer-file-name to shorten it. Replacements are applied sequentially.")
   (unless (string= buffer-file nkc/buffer-file-name)
     (setq nkc/buffer-file-name buffer-file)
     (setq nkc/buffer-id (nkc/shorten-buffer-file
-			 (nkc/replace-buffer-file buffer-file)
-			 nkc/buffer-id-max-width)))
+                         (nkc/replace-buffer-file buffer-file)
+                         nkc/buffer-id-max-width)))
   nkc/buffer-id)
 ;; Helper\ functions\ and\ variables:1 ends here
 

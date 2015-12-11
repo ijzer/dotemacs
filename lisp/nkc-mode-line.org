@@ -2,9 +2,7 @@
 
 Sets up a dynamic mode line that takes into account the width of the
 window to shorten and truncate things to display as much as possible
-while remaining readable. The mode line is initialized by
-[[https://github.com/Malabarba/smart-mode-line][smart-mode-line]] to set up hooks and such and then basically rewritten
-wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual functions from smart-mode-line.
+while remaining readable. 
 
 * Setup
 ** cl
@@ -16,15 +14,6 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
 #+BEGIN_SRC emacs-lisp
 
   (require 'use-package)
-#+END_SRC
-** smart-mode-line
-   [[https://github.com/Malabarba/smart-mode-line][github]]
-   setting sml/theme to nil limits the colorizing sml adds to the
-   modeline, which makes things a bit easier. calling sml/setup adds
-   some useful hooks even though we're going to be rewriting a lot of
-   the modeline variables sml sets up.
-#+BEGIN_SRC emacs-lisp
-  (use-package smart-mode-line)
 #+END_SRC
 ** spaceline
    [[https://github.com/TheBB/spaceline][github]]
@@ -49,14 +38,14 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
    mode line will use. Segment definitions can be found by searching
    for spaceline--segment-{name}. 
 #+NAME: spaceline-left
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   `((nkc/ace-window
      :face highlight-face
      ,@(when window-system '(:tight)))
     line-column
     ,@(if window-system '(hud :fallback buffer-position) '(buffer-position))
-    ((nkc/version-control :fallback nkc/buffer-status)
-     (nkc/buffer-id :fallback buffer-id))
+    (nkc/buffer-status nkc/vc-branch)
+    (nkc/buffer-id :fallback buffer-id)
     remote-host)
 #+END_SRC
 ** Right 
@@ -64,7 +53,7 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
    mode line will use. Segment definitions can be found by searching
    for spaceline--segment-{name}.
 #+NAME: spaceline-right
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   '((org-clock :when active)
     major-mode
     (minor-modes :when active))
@@ -87,28 +76,25 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
 #+END_SRC
 *** Modified buffers
 #+BEGIN_SRC emacs-lisp
-  (defvar nkc/buffer-status-read-only-char "R"
-    "Character to display in modeline if buffer is read-only")
-  (defvar nkc/buffer-status-not-modified-char ""
-    "Character to display in modeline if buffer is not modified")
-  (defvar nkc/buffer-status-modified-char "~"
-    "Character to display in modeline if buffer is modified")
-  (defvar nkc/buffer-status-modified-outside-char "!"
-    "Character to display in modeline if buffer was modified outside emacs")
+  (defvar nkc/buffer-status-alist
+    '((read-only . "R")
+      (not-modified . "")
+      (modified . "~")
+      (modified-outside . "~")))
 
   (spaceline-define-segment nkc/buffer-status
     "Displays a character depending on the status of the buffer."
-    (cond
-     ((buffer-stale--default-function) nkc/buffer-status-modified-outside-char)
-     (buffer-read-only nkc/buffer-status-read-only-char)
-     ((buffer-modified-p) nkc/buffer-status-modified-char)
-     (t nkc/buffer-status-not-modified-char)))
+    (cdr (assoc
+          (cond
+           ((buffer-stale--default-function) 'modified-outside)
+           (buffer-read-only 'read-only)
+           ((buffer-modified-p) 'modified)
+           (t 'not-modified))
+          nkc/buffer-status-alist)))
 #+END_SRC
 *** Version control
     vc-mode gives us useful info but takes up a ton of space.
-    look at [[https://zavoloklom.github.io/material-design-iconic-font/cheatsheet.html][material design iconic font]] for things to display under a
-    windowing system. assuming emacs has a way to add fonts with
-    propertize, which i'm fairly sure it does.
+**** vc status
 #+BEGIN_SRC emacs-lisp
   (defvar nkc/vc-state-char-alist
     '((up-to-date . "")
@@ -121,14 +107,19 @@ wholesale using [[https://github.com/TheBB/spaceline][spaceline]] and individual
       (missing . "?")
       (unregistered . "??")))
 
-  (spaceline-define-segment nkc/version-control
+  (spaceline-define-segment nkc/vc-state
+    (let* ((backend (vc-backend buffer-file-name))
+           (state (vc-state-refresh buffer-file-name backend)))
+      (cdr (assoc state nkc/vc-state-char-alist))))
+#+END_SRC
+**** vc branch
+#+BEGIN_SRC emacs-lisp
+  (spaceline-define-segment nkc/vc-branch
     "Version control information"
     (let* ((mode vc-mode)
-	   (backend (vc-backend buffer-file-name))
-	   (state (vc-state-refresh buffer-file-name backend)))
-      (concat (cdr (assoc state nkc/vc-state-char-alist))
-	      (replace-regexp-in-string
-	       (format  "\\` \\(%s[-!:?@]\\)" (symbol-name backend)) "" mode)))
+           (backend (vc-backend buffer-file-name)))
+      (replace-regexp-in-string
+       (format  "\\` \\(%s[-!:?@]\\)" (symbol-name backend)) "" mode))
     :when (and vc-mode buffer-file-name))
 #+END_SRC
 *** Buffer ID

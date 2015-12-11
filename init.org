@@ -42,8 +42,8 @@ more specialized files from lisp/
 
   (require 'pallet)
   (pallet-mode t)
-  (pallet-install)
-  (pallet-update)
+;  (pallet-install)
+;  (pallet-update)
 #+END_SRC
 ** use-package
    [[https://github.com/jwiegley/use-package][github]]

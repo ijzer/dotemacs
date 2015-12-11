@@ -22,12 +22,12 @@
 
 ;; [[file:init.org::*check%20for%20cask][check\ for\ cask:1]]
 (require 'cask "~/.cask/cask.el")
-(cask-initialize)
+  (cask-initialize)
 
-(require 'pallet)
-(pallet-mode t)
-(pallet-install)
-(pallet-update)
+  (require 'pallet)
+  (pallet-mode t)
+;  (pallet-install)
+;  (pallet-update)
 ;; check\ for\ cask:1 ends here
 
 ;; use-package

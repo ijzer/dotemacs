@@ -49,6 +49,14 @@
 (use-package nkc-mode-line)
 ;; Mode\ line:1 ends here
 
+;; Directory names
+;;    whatbox mounts home directories in /mnt which is inaccessible to users
+;;    and screws up emacs sometimes.
+
+;; [[file:nkc-settings.org::*Directory%20names][Directory\ names:1]]
+(setq directory-abbrev-alist '(("/mnt/sd[a-z][0-9]" . "/home")))
+;; Directory\ names:1 ends here
+
 ;; autofill
 
 ;; [[file:nkc-settings.org::*autofill][autofill:1]]

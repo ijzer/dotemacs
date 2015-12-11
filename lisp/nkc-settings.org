@@ -45,6 +45,12 @@ files. Nothing fancy I'm afraid.
 #+BEGIN_SRC emacs-lisp
   (use-package nkc-mode-line)
 #+END_SRC
+** Directory names
+   whatbox mounts home directories in /mnt which is inaccessible to users
+   and screws up emacs sometimes.
+#+BEGIN_SRC emacs-lisp
+  (setq directory-abbrev-alist '(("/mnt/sd[a-z][0-9]" . "/home")))
+#+END_SRC
 * Settings
 ** autofill
 #+BEGIN_SRC emacs-lisp

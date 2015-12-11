@@ -121,6 +121,9 @@ set to true."
 buffer-file-name to shorten it. Replacements are applied sequentially.")
 
 (defvar nkc/buffer-id-max-width 40 "Max width of buffer id displayed in mode line")
+(defvar nkc/buffer-id-shortener "…"
+  "String inserted between prefix and directory name if buffer id is
+shortened")
 
 (defun nkc/replace-buffer-file (buffer-file)
 "Replace matches on buffer-file using nkc/buffer-file-replacement-alist"
@@ -130,20 +133,20 @@ buffer-file-name to shorten it. Replacements are applied sequentially.")
 						buffer-file)))
   buffer-file)
 
-(defun nkc/shorten-buffer-file (buffer-file max)
-  "Shorten buffer-file to (length max) by replacing directory names with '…'"
-  (let* ((folders (split-string buffer-file "/"))
-	 (prefix (concat (pop folders) "/")))
-    (concat prefix (cl-reduce
-		    (apply-partially
-		     (lambda (max path segment)
-		       (if (not (string-match "…" path))
-			   (if (< max (+ (length path) (length segment)))
-			       (concat "…/" path)
-			     (concat segment "/" path))
-			 path))
-		     (- max (length prefix) 1))
-		    (reverse folders)))))
+(defun nkc/shorten-buffer-file (buffer-file max &optional connector)
+  "Shorten buffer-file to max at longest by replacing directory names with
+connector"
+  (let* ((filename (file-name-nondirectory buffer-file))
+	 (dirname (file-name-directory buffer-file))
+	 (prefix (car (s-match "\\`~.*?/" dirname)))
+	 (dirname (s-chop-prefix prefix dirname))
+	 (len (- max (length filename) (length prefix)))
+	 (connector (if connector connector nkc/buffer-id-shortener)))
+    (concat prefix
+	    (if (< len (length dirname))
+		(concat connector (s-right (- len (length connector)) dirname))
+	      dirname)
+	    filename)))
 
 (defvar nkc/buffer-file-name nil "File name of current buffer to check for changes")
 (make-variable-buffer-local 'nkc/buffer-file-name)
@@ -165,8 +168,10 @@ buffer-file-name to shorten it. Replacements are applied sequentially.")
 ;; [[file:nkc-mode-line.org::*Segment%20definition][Segment\ definition:1]]
 (spaceline-define-segment nkc/buffer-id
   "Current buffer ID"
-  (nkc/update-buffer-id-maybe buffer-file-name)
-  :when buffer-file-name)
+  (cond
+   (buffer-file-name (nkc/update-buffer-id-maybe buffer-file-name))
+   ((buffer-name) (buffer-name)))
+  :when (or buffer-file-name (buffer-name)))
 ;; Segment\ definition:1 ends here
 
 ;; Minor modes

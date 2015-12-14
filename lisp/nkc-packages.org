@@ -21,6 +21,19 @@ all the autoload stuff but it's still nice to make it explicit.
     (dolist (mode-hook modes) (add-hook mode-hook func)))
 #+END_SRC
 * Packages
+** info+
+#+BEGIN_SRC emacs-lisp
+  (require 'info+)
+#+END_SRC
+** ace window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :bind ("C-x o" . ace-window)
+    :config
+    (add-hook 'window-configuration-change-hook 'aw-update)
+    (setq aw-background nil
+          aw-dispatch-always t))
+#+END_SRC
 ** Magit
    [[https://github.com/magit/magit][github]] [[http://magit.vc/manual/][manual]]
 #+BEGIN_SRC emacs-lisp
@@ -45,17 +58,22 @@ all the autoload stuff but it's still nice to make it explicit.
 	   ("C-c h y" . helm-show-kill-ring))
     :init (unbind-key "C-x c")
     :config
+;; helm-list-elisp-packages
+;; helm-filtered-bookmarks
+;; helm-lisp-completion-at-point
+;; helm-complex-command-history
+;; helm-eval-expression-with-eldoc (add lispy)
+
+    (require 'helm)
     (require 'async-bytecomp)
     (bind-keys :map helm-map
 	       ("<tab>" . helm-execute-persistent-action)
-	       ("C-i" . helm-execute-persisten-action)
+	       ("C-i" . helm-execute-persistent-action)
 	       ("C-z" . helm-select-action))
 
-    (helm-auto-resize-mode 1)
+    (helm-autoresize-mode 1)
 
     (when (executable-find "curl") (setq helm-google-suggest-use-curl-p t))
-
-    (use-package hel)m
 
     (helm-mode 1))
 #+END_SRC
@@ -64,6 +82,34 @@ all the autoload stuff but it's still nice to make it explicit.
   (use-package helm-descbinds
     :bind ("C-h b" . helm-descbinds)
     :config (require 'helmconfig))
+#+END_SRC
+** helm-adaptive
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-adaptive
+    :config
+    (setq helm-adaptive-history-file (concat user-emacs-directory
+                                             "helm/helm-adaptive-history"))
+    (helm-adapative-mode 1))
+#+END_SRC
+** helm-buffers
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-buffers
+    :config
+    ((setq helm-buffers-fuzzy-matching t)))
+#+END_SRC
+** helm-command
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-command
+    :config
+    (setq helm-M-x-always-save-history t
+          helm-M-x-fuzzy-match t))
+#+END_SRC
+** helm-elisp
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-elisp
+    :config
+    (setq helm-apropos-fuzzy-match t
+          helm-lisp-fuzzy-completion t))
 #+END_SRC
 * Org
 #+BEGIN_SRC emacs-lisp
@@ -136,3 +182,4 @@ all the autoload stuff but it's still nice to make it explicit.
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-packages)
 #+END_SRC
+

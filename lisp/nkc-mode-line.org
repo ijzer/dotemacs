@@ -58,6 +58,36 @@ while remaining readable.
     major-mode
     (nkc/minor-modes :when active))
 #+END_SRC
+** Info+
+#+BEGIN_SRC emacs-lisp
+  (defvar nkc/info-breadcrumb-max-width 75
+    "Max width for breadcrumbs in info+ mode line")
+
+  (defun nkc/parse-info-mode-line ()
+    (string-match "\\`(\\(?1:[^)]+\\))\\(?2:.+\\)\\(?: > \\(?3:.+\\)\\)?\\'"
+                  mode-line-format)
+    (let* ((filename (match-string 1 mode-line-format))
+           (breadcrumbs (match-string 2 mode-line-format))
+           (node (s-truncate nkc/info-breadcrumb-max-width
+                             (match-string 3 mode-line-format)))
+           (len (- nkc/info-breadcrumb-max-width (length node)))
+           (breadcrumbs (if (< len (length breadcrumbs))
+                            (concat "..." (s-right (- len 3) breadcrumbs))
+                          breadcrumbs))
+           (breadcrumbs (when breadcrumbs (s-split " > " breadcrumbs))))
+      (setq mode-line-format `("%e"
+                               (:eval (spaceline--prepare
+                                       '((nkc/ace-window
+                                          :face highlight-face
+                                          ,@(when window-system '(:tight)))
+                                         (,filename
+                                          :face highlight-face)
+                                         ,@breadcrumbs
+                                         ,node)
+                                       nil))))))
+
+  (advice-add 'Info-set-mode-line :after #'nkc/parse-info-mode-line)
+#+END_SRC
 ** Segment Definitions
    We need to add some segments and to rewrite default segments to
    make things work for me

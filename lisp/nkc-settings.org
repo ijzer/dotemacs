@@ -17,10 +17,76 @@ files. Nothing fancy I'm afraid.
         use-dialog-box nil)
 #+END_SRC
 *** Font
+**** Backup
+     Source Code Pro
+     [[http://adobe-fonts.github.io/source-code-pro/]]
 #+BEGIN_SRC emacs-lisp
-  (if (eq window-system 'w32)
-      (add-to-list 'default-frame-alist
-                   '(font . "Meslo LG S-10")))
+  (set-fontset-font "fontset-default"
+                    'unicode
+                    (font-spec :name "Source Code Pro" :size 13
+                               :weight 'bold :width 'normal))
+#+END_SRC
+**** Default
+     Meslo LG S
+     [[https://github.com/andreberg/Meslo-Font]] 
+#+BEGIN_SRC emacs-lisp
+  (set-fontset-font "fontset-default"
+                    'ascii
+                    (font-spec :name "Meslo LG S"
+                               :weight 'normal :width 'normal)
+                    nil 'prepend)
+#+END_SRC
+**** [[https://en.wikipedia.org/wiki/Letterlike_Symbols][Unicode Letterlike Symbols]] 
+#+BEGIN_SRC emacs-lisp
+    (set-fontset-font "fontset-default"
+                      '(#x2100 . #x214F)
+                      (font-spec :name "Lucida Sans Unicode"
+                                 :weight 'normal :width 'normal) nil
+                      'prepend)
+#+END_SRC
+**** [[https://en.wikipedia.org/wiki/Arrows_(Unicode_block)][Unicode Arrows]] 
+#+BEGIN_SRC emacs-lisp
+    (set-fontset-font "fontset-default"
+                      '(#x2190 . #x21FF)
+                      (font-spec :name "Lucida Sans Unicode"
+                                 :weight 'normal :width 'normal) nil
+                                 'prepend)
+#+END_SRC
+**** [[https://en.wikipedia.org/wiki/Mathematical_Operators][Unicode Math]] 
+#+BEGIN_SRC emacs-lisp
+  (set-fontset-font "fontset-default"
+                      '(#x2200 . #x22FF)
+                      (font-spec :name "NanumGothic"
+                                 :weight 'normal :width 'normal) nil
+                                 'prepend)
+#+END_SRC
+**** [[https://en.wikipedia.org/wiki/Box-drawing_character][Unicode Line Drawing]] 
+#+BEGIN_SRC emacs-lisp
+  (set-fontset-font "fontset-default"
+                      '(#x2500 . #x257F)
+                      (font-spec :name "Lucida Sans Unicode"
+                                 :weight 'normal :width 'normal) nil
+                                 'prepend)
+#+END_SRC
+**** [[https://en.wikipedia.org/wiki/Enclosed_Alphanumerics][Unicode Circled Alnum]] 
+#+BEGIN_SRC emacs-lisp
+  (set-fontset-font "fontset-default"
+                      '(#x2460 . #x24FF)
+                      (font-spec :name "NanumGothic"
+                                 :weight 'normal :width 'normal) nil
+                                 'prepend)
+#+END_SRC
+**** [[https://en.wikipedia.org/wiki/Dingbat][Unicode Dingbats]] 
+#+BEGIN_SRC emacs-lisp
+  (set-fontset-font "fontset-default"
+                      '(#x2700 . #x27BF)
+                      (font-spec :name "NanumGothic"
+                                 :weight 'normal :width 'normal) nil
+                      'prepend)
+#+END_SRC
+**** Install fonts
+#+BEGIN_SRC emacs-lisp
+  (set-frame-font "fontset-default")
 #+END_SRC
 ** Backups
    emacs likes to strew backup and autosave files everywhere. They
@@ -28,7 +94,7 @@ files. Nothing fancy I'm afraid.
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
         auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory
-                                                        "auto-save-list") t)))
+                                                        "auto-save-list/") t)))
 #+END_SRC
    I habitually use version control so I don't need many backups and I
    don't care if I don't have old ones around.

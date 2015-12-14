@@ -15,10 +15,11 @@
 ;;    [[https://github.com/TheBB/spaceline][github]]
 
 ;; [[file:nkc-mode-line.org::*spaceline][spaceline:1]]
-(use-package spaceline-segments
+(use-package spaceline-config
   :config
   (when window-system
-    (setq spaceline-window-numbers-unicode t)))
+  (setq spaceline-window-numbers-unicode t)) 
+  (spaceline-helm-mode 1))
 ;; spaceline:1 ends here
 
 ;; Use Spaceline
@@ -30,9 +31,9 @@
  `((nkc/ace-window
     :face highlight-face
     ,@(when window-system '(:tight)))
-   line-column
+   (line-column :when active)
    buffer-position
-   remote-host
+   nkc/remote-host
    (nkc/buffer-status nkc/vc-branch)
    (nkc/buffer-id :fallback buffer-id))
  '((org-clock :when active)
@@ -40,6 +41,38 @@
    major-mode
    (nkc/minor-modes :when active)))
 ;; Use\ Spaceline:1 ends here
+
+;; Info+
+
+;; [[file:nkc-mode-line.org::*Info+][Info+:1]]
+(defvar nkc/info-breadcrumb-max-width 75
+  "Max width for breadcrumbs in info+ mode line")
+
+(defun nkc/parse-info-mode-line ()
+  (string-match "\\`(\\(?1:[^)]+\\))\\(?2:.+\\)\\(?: > \\(?3:.+\\)\\)?\\'"
+                mode-line-format)
+  (let* ((filename (match-string 1 mode-line-format))
+         (breadcrumbs (match-string 2 mode-line-format))
+         (node (s-truncate nkc/info-breadcrumb-max-width
+                           (match-string 3 mode-line-format)))
+         (len (- nkc/info-breadcrumb-max-width (length node)))
+         (breadcrumbs (if (< len (length breadcrumbs))
+                          (concat "..." (s-right (- len 3) breadcrumbs))
+                        breadcrumbs))
+         (breadcrumbs (when breadcrumbs (s-split " > " breadcrumbs))))
+    (setq mode-line-format `("%e"
+                             (:eval (spaceline--prepare
+                                     '((nkc/ace-window
+                                        :face highlight-face
+                                        ,@(when window-system '(:tight)))
+                                       (,filename
+                                        :face highlight-face)
+                                       ,@breadcrumbs
+                                       ,node)
+                                     nil))))))
+
+(advice-add 'Info-set-mode-line :after #'nkc/parse-info-mode-line)
+;; Info+:1 ends here
 
 ;; ace window
 ;;     Gives the value of the window for selecting with ace-window
@@ -51,9 +84,9 @@ Requires ace-window to be installed and ace-window-display mode to be
 set to true."
   (let* ((win (window-parameter (selected-window) 'ace-window-path)))
     (if spaceline-window-numbers-unicode
-	(spaceline--unicode-number win)
+        (spaceline--unicode-number win)
       win))
-  :when (bound-and-true-p ace-window-display-mode))
+  :when (fboundp 'ace-window))
 ;; ace\ window:1 ends here
 
 ;; Modified buffers
@@ -112,11 +145,14 @@ set to true."
 
 ;; [[file:nkc-mode-line.org::*Helper%20functions%20and%20variables][Helper\ functions\ and\ variables:1]]
 (defvar nkc/buffer-file-replacement-alist
-  `((,(rx "[*Org Src " (+ not-newline) "[ " (+ not-newline) "]*]") "")
-    (,(rx "/home/" (+? not-newline) "/") "~/")
+  `((,(rx "[*Org Src" (zero-or-more not-newline) "]*"
+          (optional (group "<" (zero-or-more (not (any ?>))) ">")) "]") "\\1")
+    (,(rx bos "/home/" (+ (not (any ?/))) "/") "~/")
     (,user-emacs-directory "~emacs/")
-    (,(rx "~emacs/lisp/") "~elisp/")
-    (,(rx "~/" (+ not-newline) "doc" (+ not-newline) "org") "~org"))
+    (,(rx bos "~emacs/lisp/") "~elisp/")
+    (,(rx bos "~/" (zero-or-more not-newline) "doc"
+          (zero-or-more not-newline) "org") "~org")
+    (,(rx bos "/" (one-or-more (not (any ?/)))) ""))
   "AList in the form ((regexp . replacement)) for applying to
 buffer-file-name to shorten it. Replacements are applied sequentially.")
 
@@ -129,24 +165,23 @@ shortened")
 "Replace matches on buffer-file using nkc/buffer-file-replacement-alist"
   (dolist (prefix nkc/buffer-file-replacement-alist)
     (setq buffer-file (replace-regexp-in-string (car prefix)
-						(cadr prefix)
-						buffer-file)))
+                                                (cadr prefix)
+                                                buffer-file)))
   buffer-file)
 
 (defun nkc/shorten-buffer-file (buffer-file max &optional connector)
   "Shorten buffer-file to max at longest by replacing directory names with
 connector"
-  (let* ((filename (file-name-nondirectory buffer-file))
-	 (dirname (file-name-directory buffer-file))
-	 (prefix (car (s-match "\\`~.*?/" dirname)))
-	 (dirname (s-chop-prefix prefix dirname))
-	 (len (- max (length filename) (length prefix)))
-	 (connector (if connector connector nkc/buffer-id-shortener)))
+  (let* ((connector (if connector connector nkc/buffer-id-shortener))
+         (filename (file-name-nondirectory buffer-file))
+         (dirname (file-name-directory buffer-file))
+         (prefix (car (s-match "\\`~.*?/" dirname)))
+         (dirname (s-chop-prefix prefix dirname))
+         (len (- max (length filename) (length prefix) (length connector))))
     (concat prefix
-	    (if (< len (length dirname))
-		(concat connector (s-right (- len (length connector)) dirname))
-	      dirname)
-	    filename)))
+            (when (< len (length dirname)) connector)
+            (s-right len dirname)
+            filename)))
 
 (defvar nkc/buffer-file-name nil "File name of current buffer to check for changes")
 (make-variable-buffer-local 'nkc/buffer-file-name)
@@ -158,8 +193,8 @@ connector"
   (unless (string= buffer-file nkc/buffer-file-name)
     (setq nkc/buffer-file-name buffer-file)
     (setq nkc/buffer-id (nkc/shorten-buffer-file
-			 (nkc/replace-buffer-file buffer-file)
-			 nkc/buffer-id-max-width)))
+                         (nkc/replace-buffer-file buffer-file)
+                         nkc/buffer-id-max-width)))
   nkc/buffer-id)
 ;; Helper\ functions\ and\ variables:1 ends here
 
@@ -178,27 +213,27 @@ connector"
 
 ;; [[file:nkc-mode-line.org::*Minor%20modes][Minor\ modes:1]]
 (defvar nkc/minor-mode-replacer-alist '((auto-fill-function "↴")
-					(visual-line-mode "↲")
-					(helm-mode "")
-					(lispy-mode "Lispy")
-					(org-src-mode "Src")
-					(eldoc-mode "")
-					(edebug-mode "∑")
-					(visible-mode "V")
-					(overwrite-mode "<")
-					(isearch-mode "")
-					(abbrev-mode "𝛂")
-					(doc-view-minor-mode "Doc")
-					(image-minor-mode (:eval
-							   (if image-type
-							       image-type
-							     "Img"))))
+                                        (visual-line-mode "↲")
+                                        (helm-mode "")
+                                        (lispy-mode "Lispy")
+                                        (org-src-mode "Src")
+                                        (eldoc-mode "")
+                                        (edebug-mode "∑")
+                                        (visible-mode "V")
+                                        (overwrite-mode "<")
+                                        (isearch-mode "")
+                                        (abbrev-mode "a")
+                                        (doc-view-minor-mode "Doc")
+                                        (image-minor-mode (:eval
+                                                           (if image-type
+                                                               image-type
+                                                             "Img"))))
   "Alist of (MODE . LIGHTER) to replace those given in minor-mode-alist")
 
 (defun nkc/minor-mode-replacer (mode lighter)
   (let ((replacer (cadr (assoc mode nkc/minor-mode-replacer-alist))))
     (if replacer
-	replacer
+        replacer
       lighter)))
 
 (spaceline-define-segment nkc/minor-modes
@@ -206,19 +241,28 @@ connector"
   (-filter
    (lambda (k) (s-present? k))
    (mapcar (lambda (mm)
-	     (let* ((mode (car mm))
-		    (lighter (cadr mm))
-		    (displayp (and (boundp mode)
-				   (symbol-value mode)))
-		    (lighter (when displayp
-			       (nkc/minor-mode-replacer
-				mode (s-trim (format-mode-line lighter)))))
-		    (displayp (s-present? lighter)))
-	       (when displayp
-		 lighter)))
-	   minor-mode-alist))
+             (let* ((mode (car mm))
+                    (lighter (cadr mm))
+                    (displayp (and (boundp mode)
+                                   (symbol-value mode)))
+                    (lighter (when displayp
+                               (nkc/minor-mode-replacer
+                                mode (s-trim (format-mode-line lighter)))))
+                    (displayp (s-present? lighter)))
+               (when displayp
+                 lighter)))
+           minor-mode-alist))
   :separator spaceline-minor-modes-separator)
 ;; Minor\ modes:1 ends here
+
+;; Remote host
+
+;; [[file:nkc-mode-line.org::*Remote%20host][Remote\ host:1]]
+(spaceline-define-segment nkc/remote-host
+  "Short hostname for remote buffers."
+  (car (split-string (file-remote-p default-directory 'host) "\\."))
+  :when (file-remote-p default-directory 'host))
+;; Remote\ host:1 ends here
 
 ;; Provide
 

@@ -17,10 +17,11 @@ while remaining readable.
 ** spaceline
    [[https://github.com/TheBB/spaceline][github]]
 #+BEGIN_SRC emacs-lisp
-  (use-package spaceline-segments
+  (use-package spaceline-config
     :config
     (when window-system
-      (setq spaceline-window-numbers-unicode t)))
+    (setq spaceline-window-numbers-unicode t)) 
+    (spaceline-helm-mode 1))
 #+END_SRC
 * Use Spaceline
    Spaceline takes two arguments, things to display on the left-hand
@@ -41,9 +42,9 @@ while remaining readable.
   `((nkc/ace-window
      :face highlight-face
      ,@(when window-system '(:tight)))
-    line-column
+    (line-column :when active)
     buffer-position
-    remote-host
+    nkc/remote-host
     (nkc/buffer-status nkc/vc-branch)
     (nkc/buffer-id :fallback buffer-id))
 #+END_SRC
@@ -100,9 +101,9 @@ while remaining readable.
   set to true."
     (let* ((win (window-parameter (selected-window) 'ace-window-path)))
       (if spaceline-window-numbers-unicode
-	  (spaceline--unicode-number win)
-	win))
-    :when (bound-and-true-p ace-window-display-mode))
+          (spaceline--unicode-number win)
+        win))
+    :when (fboundp 'ace-window))
 #+END_SRC
 *** Modified buffers
 #+BEGIN_SRC emacs-lisp
@@ -156,11 +157,14 @@ while remaining readable.
 **** Helper functions and variables
 #+BEGIN_SRC emacs-lisp
   (defvar nkc/buffer-file-replacement-alist
-    `((,(rx "[*Org Src " (+ not-newline) "[ " (+ not-newline) "]*]") "")
-      (,(rx "/home/" (+? not-newline) "/") "~/")
+    `((,(rx "[*Org Src" (zero-or-more not-newline) "]*"
+            (optional (group "<" (zero-or-more (not (any ?>))) ">")) "]") "\\1")
+      (,(rx bos "/home/" (+ (not (any ?/))) "/") "~/")
       (,user-emacs-directory "~emacs/")
-      (,(rx "~emacs/lisp/") "~elisp/")
-      (,(rx "~/" (+ not-newline) "doc" (+ not-newline) "org") "~org"))
+      (,(rx bos "~emacs/lisp/") "~elisp/")
+      (,(rx bos "~/" (zero-or-more not-newline) "doc"
+            (zero-or-more not-newline) "org") "~org")
+      (,(rx bos "/" (one-or-more (not (any ?/)))) ""))
     "AList in the form ((regexp . replacement)) for applying to
   buffer-file-name to shorten it. Replacements are applied sequentially.")
 
@@ -173,24 +177,23 @@ while remaining readable.
   "Replace matches on buffer-file using nkc/buffer-file-replacement-alist"
     (dolist (prefix nkc/buffer-file-replacement-alist)
       (setq buffer-file (replace-regexp-in-string (car prefix)
-						  (cadr prefix)
-						  buffer-file)))
+                                                  (cadr prefix)
+                                                  buffer-file)))
     buffer-file)
 
   (defun nkc/shorten-buffer-file (buffer-file max &optional connector)
     "Shorten buffer-file to max at longest by replacing directory names with
   connector"
-    (let* ((filename (file-name-nondirectory buffer-file))
-	   (dirname (file-name-directory buffer-file))
-	   (prefix (car (s-match "\\`~.*?/" dirname)))
-	   (dirname (s-chop-prefix prefix dirname))
-	   (len (- max (length filename) (length prefix)))
-	   (connector (if connector connector nkc/buffer-id-shortener)))
+    (let* ((connector (if connector connector nkc/buffer-id-shortener))
+           (filename (file-name-nondirectory buffer-file))
+           (dirname (file-name-directory buffer-file))
+           (prefix (car (s-match "\\`~.*?/" dirname)))
+           (dirname (s-chop-prefix prefix dirname))
+           (len (- max (length filename) (length prefix) (length connector))))
       (concat prefix
-	      (if (< len (length dirname))
-		  (concat connector (s-right (- len (length connector)) dirname))
-		dirname)
-	      filename)))
+              (when (< len (length dirname)) connector)
+              (s-right len dirname)
+              filename)))
 
   (defvar nkc/buffer-file-name nil "File name of current buffer to check for changes")
   (make-variable-buffer-local 'nkc/buffer-file-name)
@@ -202,8 +205,8 @@ while remaining readable.
     (unless (string= buffer-file nkc/buffer-file-name)
       (setq nkc/buffer-file-name buffer-file)
       (setq nkc/buffer-id (nkc/shorten-buffer-file
-			   (nkc/replace-buffer-file buffer-file)
-			   nkc/buffer-id-max-width)))
+                           (nkc/replace-buffer-file buffer-file)
+                           nkc/buffer-id-max-width)))
     nkc/buffer-id)
 #+END_SRC
 **** Segment definition
@@ -227,7 +230,7 @@ while remaining readable.
 					  (visible-mode "V")
 					  (overwrite-mode "<")
 					  (isearch-mode "")
-					  (abbrev-mode "𝛂")
+					  (abbrev-mode "a")
 					  (doc-view-minor-mode "Doc")
 					  (image-minor-mode (:eval
 							     (if image-type
@@ -259,7 +262,15 @@ while remaining readable.
 	     minor-mode-alist))
     :separator spaceline-minor-modes-separator)
 #+END_SRC
+*** Remote host
+#+BEGIN_SRC emacs-lisp
+  (spaceline-define-segment nkc/remote-host
+    "Short hostname for remote buffers."
+    (car (split-string (file-remote-p default-directory 'host) "\\."))
+    :when (file-remote-p default-directory 'host))
+#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-mode-line)
 #+END_SRC
+

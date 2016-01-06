@@ -6,11 +6,12 @@
 (use-package org)
 ;; Packages:1 ends here
 
-;; Open source code editing buffer in same window
+;; Org Src minor mode
 
-;; [[file:nkc-org.org::*Open%20source%20code%20editing%20buffer%20in%20same%20window][Open\ source\ code\ editing\ buffer\ in\ same\ window:1]]
-(setq org-src-window-setup 'current-window)
-;; Open\ source\ code\ editing\ buffer\ in\ same\ window:1 ends here
+;; [[file:nkc-org.org::*Org%20Src%20minor%20mode][Org\ Src\ minor\ mode:1]]
+(setq org-src-window-setup 'current-window
+      org-edit-src-auto-save-idle-delay 30)
+;; Org\ Src\ minor\ mode:1 ends here
 
 ;; Default header args
 ;;    The important ones here are starred and are changed from the
@@ -56,9 +57,9 @@
 
 ;; [[file:nkc-org.org::*Don't%20ask%20for%20confirmation%20on%20evaluates][Don\'t\ ask\ for\ confirmation\ on\ evaluates:1]]
 (setq org-confirm-babel-evaluate (lambda (lang body)
-				   (cond
-				    ((string= lang "emacs-lisp") nil)
-				    (t t))))
+                                   (cond
+                                    ((string= lang "emacs-lisp") nil)
+                                    (t t))))
 ;; Don\'t\ ask\ for\ confirmation\ on\ evaluates:1 ends here
 
 ;; Provide

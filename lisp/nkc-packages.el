@@ -14,6 +14,23 @@
   (dolist (mode-hook modes) (add-hook mode-hook func)))
 ;; hook-into-modes:1 ends here
 
+;; info+
+
+;; [[file:nkc-packages.org::*info+][info+:1]]
+(require 'info+)
+;; info+:1 ends here
+
+;; ace window
+
+;; [[file:nkc-packages.org::*ace%20window][ace\ window:1]]
+(use-package ace-window
+  :bind ("C-x o" . ace-window)
+  :config
+  (add-hook 'window-configuration-change-hook 'aw-update)
+  (setq aw-background nil
+        aw-dispatch-always t))
+;; ace\ window:1 ends here
+
 ;; Magit
 ;;    [[https://github.com/magit/magit][github]] [[http://magit.vc/manual/][manual]]
 
@@ -43,31 +60,36 @@
 
 ;; [[file:nkc-packages.org::*helm-config][helm-config:1]]
 (use-package helm-config
-  :demand t
-  :bind (("M-x" . helm-M-x)
-	 ("C-h a" . helm-apropos)
-	 ("C-x b" . helm-mini)
-	 ("C-x C-f" . helm-find-files)
-	 ("C-c h" . helm-command-prefix)
-	 ("C-c h o" . helm-occur)
-	 ("C-c h r" . helm-regexp)
-	 ("C-c h x" . helm-resume)
-	 ("C-c h y" . helm-show-kill-ring))
-  :init (unbind-key "C-x c")
-  :config
-  (require 'async-bytecomp)
-  (bind-keys :map helm-map
-	     ("<tab>" . helm-execute-persistent-action)
-	     ("C-i" . helm-execute-persisten-action)
-	     ("C-z" . helm-select-action))
+    :demand t
+    :bind (("M-x" . helm-M-x)
+           ("C-h a" . helm-apropos)
+           ("C-x b" . helm-mini)
+           ("C-x C-f" . helm-find-files)
+           ("C-c h" . helm-command-prefix)
+           ("C-c h o" . helm-occur)
+           ("C-c h r" . helm-regexp)
+           ("C-c h x" . helm-resume)
+           ("C-c h y" . helm-show-kill-ring))
+    :init (unbind-key "C-x c")
+    :config
+;; helm-list-elisp-packages
+;; helm-filtered-bookmarks
+;; helm-lisp-completion-at-point
+;; helm-complex-command-history
+;; helm-eval-expression-with-eldoc (add lispy)
 
-  (helm-auto-resize-mode 1)
+    (require 'helm)
+    (require 'async-bytecomp)
+    (bind-keys :map helm-map
+               ("<tab>" . helm-execute-persistent-action)
+               ("C-i" . helm-execute-persistent-action)
+               ("C-z" . helm-select-action))
 
-  (when (executable-find "curl") (setq helm-google-suggest-use-curl-p t))
+    (helm-autoresize-mode 1)
 
-  (use-package hel)m
+    (when (executable-find "curl") (setq helm-google-suggest-use-curl-p t))
 
-  (helm-mode 1))
+    (helm-mode 1))
 ;; helm-config:1 ends here
 
 ;; helm-descbinds
@@ -77,6 +99,42 @@
   :bind ("C-h b" . helm-descbinds)
   :config (require 'helmconfig))
 ;; helm-descbinds:1 ends here
+
+;; helm-adaptive
+
+;; [[file:nkc-packages.org::*helm-adaptive][helm-adaptive:1]]
+(use-package helm-adaptive
+  :config
+  (setq helm-adaptive-history-file (concat user-emacs-directory
+                                           "helm/helm-adaptive-history"))
+  (helm-adapative-mode 1))
+;; helm-adaptive:1 ends here
+
+;; helm-buffers
+
+;; [[file:nkc-packages.org::*helm-buffers][helm-buffers:1]]
+(use-package helm-buffers
+  :config
+  ((setq helm-buffers-fuzzy-matching t)))
+;; helm-buffers:1 ends here
+
+;; helm-command
+
+;; [[file:nkc-packages.org::*helm-command][helm-command:1]]
+(use-package helm-command
+  :config
+  (setq helm-M-x-always-save-history t
+        helm-M-x-fuzzy-match t))
+;; helm-command:1 ends here
+
+;; helm-elisp
+
+;; [[file:nkc-packages.org::*helm-elisp][helm-elisp:1]]
+(use-package helm-elisp
+  :config
+  (setq helm-apropos-fuzzy-match t
+        helm-lisp-fuzzy-completion t))
+;; helm-elisp:1 ends here
 
 ;; Org
 
@@ -114,7 +172,7 @@
 (defun nkc/lisp-mode-hook ()
   (unless lisp-mode-initialized
     (setq lisp-mode-initialized t)
-
+  
     (info-lookmore-elisp-userlast)
     (info-lookmore-elisp-cl))
 

@@ -10,9 +10,10 @@
 * Org Bable
   I use org bable basically all the time. Here's some stuff that makes
   that not a nightmare.
-** Open source code editing buffer in same window
+** Org Src minor mode
 #+BEGIN_SRC emacs-lisp
-  (setq org-src-window-setup 'current-window)
+  (setq org-src-window-setup 'current-window
+        org-edit-src-auto-save-idle-delay 30)
 #+END_SRC
 ** Default header args
    The important ones here are starred and are changed from the

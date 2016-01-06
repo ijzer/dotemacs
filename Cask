@@ -3,10 +3,13 @@
 (source org)
 
 (depends-on "ace-window")
+(depends-on "alchemist")
 (depends-on "auto-compile")
 (depends-on "avy")
 (depends-on "bind-key")
+(depends-on "company-mode")
 (depends-on "emojify")
+(depends-on "elixir-mode")
 (depends-on "fold-dwim")
 (depends-on "helm")
 (depends-on "helm-descbinds")
@@ -24,6 +27,7 @@
 (depends-on "spaceline")
 (depends-on "swiper-helm")
 (depends-on "use-package")
+(depends-on "which-key")
 ;;;pallet-ignore
 (depends-on "info-lookmore" :git "https://github.com/emacsmirror/info-lookmore")
 (depends-on "info+" :git "https://github.com/emacsmirror/info-plus")

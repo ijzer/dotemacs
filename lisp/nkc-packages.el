@@ -23,6 +23,22 @@
          ("C-c g p" . magit-pull)))
 ;; Magit:1 ends here
 
+;; Company
+
+;; [[file:nkc-packages.org::*Company][Company:1]]
+(use-package company-mode
+  :bind ("C-t" . company-complete))
+;; Company:1 ends here
+
+;; which-key
+
+;; [[file:nkc-packages.org::*which-key][which-key:1]]
+(use-package which-key
+  :config
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
+;; which-key:1 ends here
+
 ;; helm-config
 
 ;; [[file:nkc-packages.org::*helm-config][helm-config:1]]

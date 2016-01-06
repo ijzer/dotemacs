@@ -29,6 +29,18 @@ all the autoload stuff but it's still nice to make it explicit.
            ("C-c g p" . magit-pull)))
 #+END_SRC
 ** TODO Tramp
+** Company
+#+BEGIN_SRC emacs-lisp
+  (use-package company-mode
+    :bind ("C-t" . company-complete))
+#+END_SRC
+** which-key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :config
+    (which-key-setup-side-window-right-bottom)
+    (which-key-mode))
+#+END_SRC
 * Helm
 ** helm-config
 #+BEGIN_SRC emacs-lisp

@@ -45,8 +45,8 @@
 #+END_SRC
 ** Use eldoc with org files
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook #'org-eldoc-load)
-  (add-hook 'org-mode-hook #'eldoc-mode)
+  (remove-hook 'org-mode-hook #'org-eldoc-load)
+  (remove-hook 'org-mode-hook #'eldoc-mode)
 #+END_SRC
 ** Don't ask for confirmation on evaluates
 #+BEGIN_SRC emacs-lisp

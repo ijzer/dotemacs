@@ -42,6 +42,13 @@ all the autoload stuff but it's still nice to make it explicit.
            ("C-c g p" . magit-pull)))
 #+END_SRC
 ** TODO Tramp
+** typing
+#+BEGIN_SRC emacs-lisp
+  (use-package typing
+    :load-path "site-lisp"
+    :config
+    (setq toe-highscore-file (concat user-emacs-directory "toe-highscore")))
+#+END_SRC
 * Helm
 ** helm-config
 #+BEGIN_SRC emacs-lisp
@@ -81,7 +88,7 @@ all the autoload stuff but it's still nice to make it explicit.
 #+BEGIN_SRC emacs-lisp
   (use-package helm-descbinds
     :bind ("C-h b" . helm-descbinds)
-    :config (require 'helmconfig))
+    :config (require 'helm-config))
 #+END_SRC
 ** helm-adaptive
 #+BEGIN_SRC emacs-lisp
@@ -89,13 +96,13 @@ all the autoload stuff but it's still nice to make it explicit.
     :config
     (setq helm-adaptive-history-file (concat user-emacs-directory
                                              "helm/helm-adaptive-history"))
-    (helm-adapative-mode 1))
+    (helm-adaptive-mode 1))
 #+END_SRC
 ** helm-buffers
 #+BEGIN_SRC emacs-lisp
   (use-package helm-buffers
     :config
-    ((setq helm-buffers-fuzzy-matching t)))
+    (setq helm-buffers-fuzzy-matching t))
 #+END_SRC
 ** helm-command
 #+BEGIN_SRC emacs-lisp
@@ -170,6 +177,10 @@ all the autoload stuff but it's still nice to make it explicit.
 **** Minibuffer evals
 #+BEGIN_SRC emacs-lisp
 
+#+END_SRC
+** Ledger
+#+BEGIN_SRC emacs-lisp
+  (setq ledger-binary-path "/usr/local/bin/ledger")
 #+END_SRC
 * Themes
 ** Solarized

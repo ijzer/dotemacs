@@ -6,6 +6,16 @@
 (use-package org)
 ;; Packages:1 ends here
 
+;; Languages
+
+;; [[file:nkc-org.org::*Languages][Languages:1]]
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python . t)
+   (ledger . t)))
+;; Languages:1 ends here
+
 ;; Org Src minor mode
 
 ;; [[file:nkc-org.org::*Org%20Src%20minor%20mode][Org\ Src\ minor\ mode:1]]

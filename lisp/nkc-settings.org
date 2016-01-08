@@ -88,6 +88,9 @@ files. Nothing fancy I'm afraid.
 #+BEGIN_SRC emacs-lisp
   (set-frame-font "fontset-default")
 #+END_SRC
+*** Symbols
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
 ** Backups
    emacs likes to strew backup and autosave files everywhere. They
    ought to be in one place. So let's do that.

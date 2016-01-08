@@ -40,6 +40,15 @@
          ("C-c g p" . magit-pull)))
 ;; Magit:1 ends here
 
+;; typing
+
+;; [[file:nkc-packages.org::*typing][typing:1]]
+(use-package typing
+  :load-path "site-lisp"
+  :config
+  (setq toe-highscore-file (concat user-emacs-directory "toe-highscore")))
+;; typing:1 ends here
+
 ;; helm-config
 
 ;; [[file:nkc-packages.org::*helm-config][helm-config:1]]
@@ -81,7 +90,7 @@
 ;; [[file:nkc-packages.org::*helm-descbinds][helm-descbinds:1]]
 (use-package helm-descbinds
   :bind ("C-h b" . helm-descbinds)
-  :config (require 'helmconfig))
+  :config (require 'helm-config))
 ;; helm-descbinds:1 ends here
 
 ;; helm-adaptive
@@ -91,7 +100,7 @@
   :config
   (setq helm-adaptive-history-file (concat user-emacs-directory
                                            "helm/helm-adaptive-history"))
-  (helm-adapative-mode 1))
+  (helm-adaptive-mode 1))
 ;; helm-adaptive:1 ends here
 
 ;; helm-buffers
@@ -99,7 +108,7 @@
 ;; [[file:nkc-packages.org::*helm-buffers][helm-buffers:1]]
 (use-package helm-buffers
   :config
-  ((setq helm-buffers-fuzzy-matching t)))
+  (setq helm-buffers-fuzzy-matching t))
 ;; helm-buffers:1 ends here
 
 ;; helm-command
@@ -183,6 +192,12 @@
 ;; [[file:nkc-packages.org::*Minibuffer%20evals][Minibuffer\ evals:1]]
 
 ;; Minibuffer\ evals:1 ends here
+
+;; Ledger
+
+;; [[file:nkc-packages.org::*Ledger][Ledger:1]]
+(setq ledger-binary-path "/usr/local/bin/ledger")
+;; Ledger:1 ends here
 
 ;; Solarized
 ;;    [[https://github.com/sellout/emacs-color-theme-solarized][github]]

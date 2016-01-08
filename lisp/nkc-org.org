@@ -10,6 +10,14 @@
 * Org Bable
   I use org bable basically all the time. Here's some stuff that makes
   that not a nightmare.
+** Languages
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)
+     (ledger . t)))
+#+END_SRC
 ** Org Src minor mode
 #+BEGIN_SRC emacs-lisp
   (setq org-src-window-setup 'current-window

@@ -100,6 +100,12 @@
 (set-frame-font "fontset-default")
 ;; Install\ fonts:1 ends here
 
+;; Symbols
+
+;; [[file:nkc-settings.org::*Symbols][Symbols:1]]
+
+;; Symbols:1 ends here
+
 ;; Backups
 ;;    emacs likes to strew backup and autosave files everywhere. They
 ;;    ought to be in one place. So let's do that.

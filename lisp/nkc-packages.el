@@ -48,6 +48,21 @@
   :config
   (setq toe-highscore-file (concat user-emacs-directory "toe-highscore")))
 ;; typing:1 ends here
+;; Company
+
+;; [[file:nkc-packages.org::*Company][Company:1]]
+(use-package company-mode
+  :bind ("C-t" . company-complete))
+;; Company:1 ends here
+
+;; which-key
+
+;; [[file:nkc-packages.org::*which-key][which-key:1]]
+(use-package which-key
+  :config
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
+;; which-key:1 ends here
 
 ;; helm-config
 

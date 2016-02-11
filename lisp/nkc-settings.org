@@ -32,57 +32,10 @@ files. Nothing fancy I'm afraid.
 #+BEGIN_SRC emacs-lisp
   (set-fontset-font "fontset-default"
                     'ascii
-                    (font-spec :name "Meslo LG S"
-                               :weight 'normal :width 'normal)
+                    (font-spec :name "Meslo LG S for Powerline"
+                               :weight 'normal :width 'normal
+                               :size 10.0)
                     nil 'prepend)
-#+END_SRC
-**** [[https://en.wikipedia.org/wiki/Letterlike_Symbols][Unicode Letterlike Symbols]] 
-#+BEGIN_SRC emacs-lisp
-    (set-fontset-font "fontset-default"
-                      '(#x2100 . #x214F)
-                      (font-spec :name "Lucida Sans Unicode"
-                                 :weight 'normal :width 'normal) nil
-                      'prepend)
-#+END_SRC
-**** [[https://en.wikipedia.org/wiki/Arrows_(Unicode_block)][Unicode Arrows]] 
-#+BEGIN_SRC emacs-lisp
-    (set-fontset-font "fontset-default"
-                      '(#x2190 . #x21FF)
-                      (font-spec :name "Lucida Sans Unicode"
-                                 :weight 'normal :width 'normal) nil
-                                 'prepend)
-#+END_SRC
-**** [[https://en.wikipedia.org/wiki/Mathematical_Operators][Unicode Math]] 
-#+BEGIN_SRC emacs-lisp
-  (set-fontset-font "fontset-default"
-                      '(#x2200 . #x22FF)
-                      (font-spec :name "NanumGothic"
-                                 :weight 'normal :width 'normal) nil
-                                 'prepend)
-#+END_SRC
-**** [[https://en.wikipedia.org/wiki/Box-drawing_character][Unicode Line Drawing]] 
-#+BEGIN_SRC emacs-lisp
-  (set-fontset-font "fontset-default"
-                      '(#x2500 . #x257F)
-                      (font-spec :name "Lucida Sans Unicode"
-                                 :weight 'normal :width 'normal) nil
-                                 'prepend)
-#+END_SRC
-**** [[https://en.wikipedia.org/wiki/Enclosed_Alphanumerics][Unicode Circled Alnum]] 
-#+BEGIN_SRC emacs-lisp
-  (set-fontset-font "fontset-default"
-                      '(#x2460 . #x24FF)
-                      (font-spec :name "NanumGothic"
-                                 :weight 'normal :width 'normal) nil
-                                 'prepend)
-#+END_SRC
-**** [[https://en.wikipedia.org/wiki/Dingbat][Unicode Dingbats]] 
-#+BEGIN_SRC emacs-lisp
-  (set-fontset-font "fontset-default"
-                      '(#x2700 . #x27BF)
-                      (font-spec :name "NanumGothic"
-                                 :weight 'normal :width 'normal) nil
-                      'prepend)
 #+END_SRC
 **** Install fonts
 #+BEGIN_SRC emacs-lisp
@@ -121,11 +74,6 @@ files. Nothing fancy I'm afraid.
   (setq directory-abbrev-alist '(("/mnt/sd[a-z][0-9]" . "/home")))
 #+END_SRC
 * Settings
-** autofill
-#+BEGIN_SRC emacs-lisp
-  (setq-default fill-column 75
-		auto-fill-function 'do-auto-fill)
-#+END_SRC
 ** Visual line mode
 #+BEGIN_SRC emacs-lisp
   (visual-line-mode)

@@ -21,7 +21,7 @@
 ;;    package-initialize instead.
 
 ;; [[file:init.org::*check%20for%20cask][check\ for\ cask:1]]
-(require 'cask "~/.cask/cask.el")
+(require 'cask)
   (cask-initialize)
 
   (require 'pallet)

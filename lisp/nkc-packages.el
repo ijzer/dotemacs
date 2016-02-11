@@ -48,12 +48,14 @@
   :config
   (setq toe-highscore-file (concat user-emacs-directory "toe-highscore")))
 ;; typing:1 ends here
-;; Company
 
-;; [[file:nkc-packages.org::*Company][Company:1]]
-(use-package company-mode
+;; company
+
+;; [[file:nkc-packages.org::*company][company:1]]
+(use-package company
+  :init (global-company-mode)
   :bind ("C-t" . company-complete))
-;; Company:1 ends here
+;; company:1 ends here
 
 ;; which-key
 
@@ -63,6 +65,40 @@
   (which-key-setup-side-window-right-bottom)
   (which-key-mode))
 ;; which-key:1 ends here
+
+;; smartparens
+
+;; [[file:nkc-packages.org::*smartparens][smartparens:1]]
+(use-package smartparens-config
+  :init
+  (show-smartparens-global-mode t)
+  (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+  (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+  :bind (("C-<" . sp-forward-barf-sexp)
+         ("C->" . sp-forward-slurp-sexp)
+         ("C-M-f" . sp-forward-sexp)
+         ("C-M-b" . sp-backward-sexp)
+         ("C-M-p" . sp-up-sexp)
+         ("C-M-n" . sp-down-sexp)
+         ("C-M-a" . sp-beginning-of-sexp)
+         ("C-M-e" . sp-end-of-sexp)))
+;; smartparens:1 ends here
+
+;; origami
+
+;; [[file:nkc-packages.org::*origami][origami:1]]
+(use-package origami
+  :init (global-origami-mode)
+  :config
+  (bind-keys :map origami-mode-map
+             ("C-<tab>" . origami-recursively-toggle-node)
+             ("C-c o n" . origami-next-fold)
+             ("C-c o p" . origami-previous-fold)
+             ("C-c o s" . origami-show-only-node)
+             ("C-c o o" . origami-open-all-nodes)
+             ("C-c o c" . origami-close-all-nodes)
+             ("C-c o u" . origami-undo)))
+;; origami:1 ends here
 
 ;; helm-config
 
@@ -180,14 +216,14 @@
 (defun nkc/lisp-mode-hook ()
   (unless lisp-mode-initialized
     (setq lisp-mode-initialized t)
-  
+
     (info-lookmore-elisp-userlast)
     (info-lookmore-elisp-cl))
 
   (add-hook 'after-save-hook 'check-parens nil t)
   (eldoc-mode 1)
   (lispy-mode 1)
-  (show-paren-mode)
+  (smartparens-mode -1)
 
 
 
@@ -213,6 +249,51 @@
 ;; [[file:nkc-packages.org::*Ledger][Ledger:1]]
 (setq ledger-binary-path "/usr/local/bin/ledger")
 ;; Ledger:1 ends here
+
+;; elixir-mode
+
+;; [[file:nkc-packages.org::*elixir-mode][elixir-mode:1]]
+(use-package elixir-mode
+  :config
+  ;; (defun nkc/smartparens-elixir-inline-p (id action context)
+  ;;   (when (eq action 'navigate)
+  ;;     (save-excursion
+  ;;    (looking-at-p "[^:]*?\\s-"))))
+  (sp-with-modes '(elixir-mode)
+    (sp-local-pair "do" "end"
+                   :actions '(insert navigate))
+    (sp-local-pair ", do:" ":"
+                   :actions '(insert navigate))
+    (sp-local-pair "fn" "end"
+                   :actions '(insert navigate))))
+;; elixir-mode:1 ends here
+
+;; alchemist
+
+;; [[file:nkc-packages.org::*alchemist][alchemist:1]]
+(use-package alchemist
+  :init (add-hook 'elixir-mode-hook 'alchemist-mode-hook)
+  :config
+  (setq alchemist-test-status-modeline nil)
+  (defun nkc/erlang-alchemist-hook ()
+    (define-key erlang-mode-map (kbd "M-,") 'alchemist-goto-jump-back))
+
+  (add-hook 'erlang-mode-hook 'nkc/erlang-alchemist-hook))
+;; alchemist:1 ends here
+
+;; YAML
+
+;; [[file:nkc-packages.org::*YAML][YAML:1]]
+(use-package yaml-mode
+  :mode "\\.raml\\'")
+;; YAML:1 ends here
+
+;; Markdown
+
+;; [[file:nkc-packages.org::*Markdown][Markdown:1]]
+(use-package markdown-mode
+  :mode ("\\.md\\'" . gfm-mode))
+;; Markdown:1 ends here
 
 ;; Solarized
 ;;    [[https://github.com/sellout/emacs-color-theme-solarized][github]]

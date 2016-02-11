@@ -29,70 +29,11 @@
 ;; [[file:nkc-settings.org::*Default][Default:1]]
 (set-fontset-font "fontset-default"
                   'ascii
-                  (font-spec :name "Meslo LG S"
-                             :weight 'normal :width 'normal)
+                  (font-spec :name "Meslo LG S for Powerline"
+                             :weight 'normal :width 'normal
+                             :size 10.0)
                   nil 'prepend)
 ;; Default:1 ends here
-
-;; [[https://en.wikipedia.org/wiki/Letterlike_Symbols][Unicode Letterlike Symbols]] 
-
-;; [[file:nkc-settings.org::*%5B%5Bhttps:/en.wikipedia.org/wiki/Letterlike_Symbols%5D%5BUnicode%20Letterlike%20Symbols%5D%5D][\[\[https://en\.wikipedia\.org/wiki/Letterlike_Symbols\]\[Unicode\ Letterlike\ Symbols\]\]:1]]
-(set-fontset-font "fontset-default"
-                  '(#x2100 . #x214F)
-                  (font-spec :name "Lucida Sans Unicode"
-                             :weight 'normal :width 'normal) nil
-                  'prepend)
-;; \[\[https://en\.wikipedia\.org/wiki/Letterlike_Symbols\]\[Unicode\ Letterlike\ Symbols\]\]:1 ends here
-
-;; [[https://en.wikipedia.org/wiki/Arrows_(Unicode_block)][Unicode Arrows]] 
-
-;; [[file:nkc-settings.org::*%5B%5Bhttps:/en.wikipedia.org/wiki/Arrows_(Unicode_block)%5D%5BUnicode%20Arrows%5D%5D][\[\[https://en\.wikipedia\.org/wiki/Arrows_\(Unicode_block\)\]\[Unicode\ Arrows\]\]:1]]
-(set-fontset-font "fontset-default"
-                  '(#x2190 . #x21FF)
-                  (font-spec :name "Lucida Sans Unicode"
-                             :weight 'normal :width 'normal) nil
-                             'prepend)
-;; \[\[https://en\.wikipedia\.org/wiki/Arrows_\(Unicode_block\)\]\[Unicode\ Arrows\]\]:1 ends here
-
-;; [[https://en.wikipedia.org/wiki/Mathematical_Operators][Unicode Math]] 
-
-;; [[file:nkc-settings.org::*%5B%5Bhttps:/en.wikipedia.org/wiki/Mathematical_Operators%5D%5BUnicode%20Math%5D%5D][\[\[https://en\.wikipedia\.org/wiki/Mathematical_Operators\]\[Unicode\ Math\]\]:1]]
-(set-fontset-font "fontset-default"
-                    '(#x2200 . #x22FF)
-                    (font-spec :name "NanumGothic"
-                               :weight 'normal :width 'normal) nil
-                               'prepend)
-;; \[\[https://en\.wikipedia\.org/wiki/Mathematical_Operators\]\[Unicode\ Math\]\]:1 ends here
-
-;; [[https://en.wikipedia.org/wiki/Box-drawing_character][Unicode Line Drawing]] 
-
-;; [[file:nkc-settings.org::*%5B%5Bhttps:/en.wikipedia.org/wiki/Box-drawing_character%5D%5BUnicode%20Line%20Drawing%5D%5D][\[\[https://en\.wikipedia\.org/wiki/Box-drawing_character\]\[Unicode\ Line\ Drawing\]\]:1]]
-(set-fontset-font "fontset-default"
-                    '(#x2500 . #x257F)
-                    (font-spec :name "Lucida Sans Unicode"
-                               :weight 'normal :width 'normal) nil
-                               'prepend)
-;; \[\[https://en\.wikipedia\.org/wiki/Box-drawing_character\]\[Unicode\ Line\ Drawing\]\]:1 ends here
-
-;; [[https://en.wikipedia.org/wiki/Enclosed_Alphanumerics][Unicode Circled Alnum]] 
-
-;; [[file:nkc-settings.org::*%5B%5Bhttps:/en.wikipedia.org/wiki/Enclosed_Alphanumerics%5D%5BUnicode%20Circled%20Alnum%5D%5D][\[\[https://en\.wikipedia\.org/wiki/Enclosed_Alphanumerics\]\[Unicode\ Circled\ Alnum\]\]:1]]
-(set-fontset-font "fontset-default"
-                    '(#x2460 . #x24FF)
-                    (font-spec :name "NanumGothic"
-                               :weight 'normal :width 'normal) nil
-                               'prepend)
-;; \[\[https://en\.wikipedia\.org/wiki/Enclosed_Alphanumerics\]\[Unicode\ Circled\ Alnum\]\]:1 ends here
-
-;; [[https://en.wikipedia.org/wiki/Dingbat][Unicode Dingbats]] 
-
-;; [[file:nkc-settings.org::*%5B%5Bhttps:/en.wikipedia.org/wiki/Dingbat%5D%5BUnicode%20Dingbats%5D%5D][\[\[https://en\.wikipedia\.org/wiki/Dingbat\]\[Unicode\ Dingbats\]\]:1]]
-(set-fontset-font "fontset-default"
-                    '(#x2700 . #x27BF)
-                    (font-spec :name "NanumGothic"
-                               :weight 'normal :width 'normal) nil
-                    'prepend)
-;; \[\[https://en\.wikipedia\.org/wiki/Dingbat\]\[Unicode\ Dingbats\]\]:1 ends here
 
 ;; Install fonts
 
@@ -120,14 +61,14 @@
 ;; I habitually use version control so I don't need many backups and I
 ;; don't care if I don't have old ones around.
 
-;; [[file:nkc-settings.org::*Backups][Backups:1]]
+;; [[file:nkc-settings.org::*Backups][Backups:2]]
 (setq delete-old-versions t
       kept-old-versions 0
       kept-new-versions 5
       version-control t
       vc-make-backup-files t
       backup-by-copying t)
-;; Backups:1 ends here
+;; Backups:2 ends here
 
 ;; Mode line
 ;;    My mode line edits got a little out of hand.
@@ -143,13 +84,6 @@
 ;; [[file:nkc-settings.org::*Directory%20names][Directory\ names:1]]
 (setq directory-abbrev-alist '(("/mnt/sd[a-z][0-9]" . "/home")))
 ;; Directory\ names:1 ends here
-
-;; autofill
-
-;; [[file:nkc-settings.org::*autofill][autofill:1]]
-(setq-default fill-column 75
-              auto-fill-function 'do-auto-fill)
-;; autofill:1 ends here
 
 ;; Visual line mode
 

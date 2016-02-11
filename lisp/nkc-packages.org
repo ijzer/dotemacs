@@ -48,9 +48,11 @@ all the autoload stuff but it's still nice to make it explicit.
     :load-path "site-lisp"
     :config
     (setq toe-highscore-file (concat user-emacs-directory "toe-highscore")))
-** Company
+#+END_SRC
+** company
 #+BEGIN_SRC emacs-lisp
-  (use-package company-mode
+  (use-package company
+    :init (global-company-mode)
     :bind ("C-t" . company-complete))
 #+END_SRC
 ** which-key
@@ -59,6 +61,36 @@ all the autoload stuff but it's still nice to make it explicit.
     :config
     (which-key-setup-side-window-right-bottom)
     (which-key-mode))
+#+END_SRC
+** smartparens
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens-config
+    :init
+    (show-smartparens-global-mode t)
+    (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+    (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+    :bind (("C-<" . sp-forward-barf-sexp)
+           ("C->" . sp-forward-slurp-sexp)
+           ("C-M-f" . sp-forward-sexp)
+           ("C-M-b" . sp-backward-sexp)
+           ("C-M-p" . sp-up-sexp)
+           ("C-M-n" . sp-down-sexp)
+           ("C-M-a" . sp-beginning-of-sexp)
+           ("C-M-e" . sp-end-of-sexp)))
+#+END_SRC
+** origami
+#+BEGIN_SRC emacs-lisp
+  (use-package origami
+    :init (global-origami-mode)
+    :config
+    (bind-keys :map origami-mode-map
+               ("C-<tab>" . origami-recursively-toggle-node)
+               ("C-c o n" . origami-next-fold)
+               ("C-c o p" . origami-previous-fold)
+               ("C-c o s" . origami-show-only-node)
+               ("C-c o o" . origami-open-all-nodes)
+               ("C-c o c" . origami-close-all-nodes)
+               ("C-c o u" . origami-undo)))
 #+END_SRC
 * Helm
 ** helm-config
@@ -164,16 +196,16 @@ all the autoload stuff but it's still nice to make it explicit.
   (defun nkc/lisp-mode-hook ()
     (unless lisp-mode-initialized
       (setq lisp-mode-initialized t)
-    
+  
       (info-lookmore-elisp-userlast)
       (info-lookmore-elisp-cl))
 
     (add-hook 'after-save-hook 'check-parens nil t)
     (eldoc-mode 1)
     (lispy-mode 1)
-    (show-paren-mode)
+    (smartparens-mode -1)
 
-  
+
 
 
     (font-lock-add-keywords
@@ -192,6 +224,45 @@ all the autoload stuff but it's still nice to make it explicit.
 ** Ledger
 #+BEGIN_SRC emacs-lisp
   (setq ledger-binary-path "/usr/local/bin/ledger")
+#+END_SRC
+** Elixir
+*** Packages
+**** elixir-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package elixir-mode
+    :config
+    ;; (defun nkc/smartparens-elixir-inline-p (id action context)
+    ;;   (when (eq action 'navigate)
+    ;;     (save-excursion
+    ;;    (looking-at-p "[^:]*?\\s-"))))
+    (sp-with-modes '(elixir-mode)
+      (sp-local-pair "do" "end"
+                     :actions '(insert navigate))
+      (sp-local-pair ", do:" ":"
+                     :actions '(insert navigate))
+      (sp-local-pair "fn" "end"
+                     :actions '(insert navigate))))
+#+END_SRC
+**** alchemist
+#+BEGIN_SRC emacs-lisp
+  (use-package alchemist
+    :init (add-hook 'elixir-mode-hook 'alchemist-mode-hook)
+    :config
+    (setq alchemist-test-status-modeline nil)
+    (defun nkc/erlang-alchemist-hook ()
+      (define-key erlang-mode-map (kbd "M-,") 'alchemist-goto-jump-back))
+
+    (add-hook 'erlang-mode-hook 'nkc/erlang-alchemist-hook))
+#+END_SRC
+** YAML
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :mode "\\.raml\\'")
+#+END_SRC
+** Markdown
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :mode ("\\.md\\'" . gfm-mode))
 #+END_SRC
 * Themes
 ** Solarized

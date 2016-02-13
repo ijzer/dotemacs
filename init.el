@@ -7,6 +7,13 @@
 ;;    labeled? So I might remove everything but lisp/ from this later. 
 
 ;; [[file:init.org::*Load%20path][Load\ path:1]]
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (eval-and-compile
   (mapc
    #'(lambda (path)
@@ -21,7 +28,7 @@
 ;;    package-initialize instead.
 
 ;; [[file:init.org::*check%20for%20cask][check\ for\ cask:1]]
-(require 'cask)
+(require 'cask "~/.cask/cask.el")
   (cask-initialize)
 
   (require 'pallet)

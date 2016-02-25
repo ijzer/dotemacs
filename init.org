@@ -37,7 +37,7 @@ more specialized files from lisp/
    packages are actually installed, but we'll need to run
    package-initialize instead.
 #+BEGIN_SRC emacs-lisp
-    (require 'cask "~/.cask/cask.el")
+    (require 'cask)
     (cask-initialize)
 
     (require 'pallet)

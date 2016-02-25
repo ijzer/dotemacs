@@ -32,14 +32,14 @@ files. Nothing fancy I'm afraid.
 #+BEGIN_SRC emacs-lisp
   (set-fontset-font "fontset-default"
                     'ascii
-                    (font-spec :name "Meslo LG S for Powerline"
+                    (font-spec :name "Pragmata Pro"
                                :weight 'normal :width 'normal
-                               :size 10.0)
+                               :size 9.0)
                     nil 'prepend)
 #+END_SRC
 **** Install fonts
 #+BEGIN_SRC emacs-lisp
-  (set-frame-font "fontset-default")
+  (set-frame-font "fontset-default") 
 #+END_SRC
 *** Symbols
 #+BEGIN_SRC emacs-lisp

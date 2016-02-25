@@ -29,9 +29,9 @@
 ;; [[file:nkc-settings.org::*Default][Default:1]]
 (set-fontset-font "fontset-default"
                   'ascii
-                  (font-spec :name "Meslo LG S for Powerline"
+                  (font-spec :name "Pragmata Pro"
                              :weight 'normal :width 'normal
-                             :size 10.0)
+                             :size 9.0)
                   nil 'prepend)
 ;; Default:1 ends here
 

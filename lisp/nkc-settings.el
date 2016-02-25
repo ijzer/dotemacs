@@ -6,26 +6,20 @@
 (tooltip-mode -1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
 (setq inhibit-startup-screen t
       use-dialog-box nil)
+(if (version< emacs-version "25")
+    (scroll-bar-mode -1)
+  (menu-bar-no-scroll-bar))
 ;; GUI:1 ends here
 
 ;; Backup
 ;;      Source Code Pro
 ;;      [[http://adobe-fonts.github.io/source-code-pro/]]
-
-;; [[file:nkc-settings.org::*Backup][Backup:1]]
-(set-fontset-font "fontset-default"
-                  'unicode
-                  (font-spec :name "Source Code Pro" :size 13
-                             :weight 'bold :width 'normal))
-;; Backup:1 ends here
-
-;; Default
 ;;      Meslo LG S
 ;;      [[https://github.com/andreberg/Meslo-Font]] 
 
+<<<<<<< HEAD
 ;; [[file:nkc-settings.org::*Default][Default:1]]
 (set-fontset-font "fontset-default"
                   'ascii
@@ -46,6 +40,23 @@
 ;; [[file:nkc-settings.org::*Symbols][Symbols:1]]
 
 ;; Symbols:1 ends here
+=======
+;; [[file:nkc-settings.org::*Backup][Backup:1]]
+(if (version< emacs-version "25")
+    (progn
+      (set-fontset-font "fontset-default"
+                        'unicode
+                        (font-spec :name "Source Code Pro" :size 13
+                                   :weight 'bold :width 'normal))
+      (set-fontset-font "fontset-default"
+                        'ascii
+                        (font-spec :name "Meslo LG S for Powerline"
+                                   :weight 'normal :width 'normal
+                                   :size 10.0)
+                        nil 'prepend)
+      (set-frame-font "fontset-default")))
+;; Backup:1 ends here
+>>>>>>> 0d635805d7a2686e037caaa844eaa94a008a7186
 
 ;; Backups
 ;;    emacs likes to strew backup and autosave files everywhere. They

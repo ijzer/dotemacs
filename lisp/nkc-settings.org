@@ -12,37 +12,27 @@ files. Nothing fancy I'm afraid.
   (tooltip-mode -1)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
-  (scroll-bar-mode -1)
   (setq inhibit-startup-screen t
         use-dialog-box nil)
+  (if (version< emacs-version "25")
+      (scroll-bar-mode -1)
+    (menu-bar-no-scroll-bar))
 #+END_SRC
 *** Font
-**** Backup
-     Source Code Pro
-     [[http://adobe-fonts.github.io/source-code-pro/]]
+   Source Code Pro
+   [[http://adobe-fonts.github.io/source-code-pro/]]
+   Meslo LG S
+   [[https://github.com/andreberg/Meslo-Font]] 
 #+BEGIN_SRC emacs-lisp
-  (set-fontset-font "fontset-default"
-                    'unicode
-                    (font-spec :name "Source Code Pro" :size 13
-                               :weight 'bold :width 'normal))
-#+END_SRC
-**** Default
-     Meslo LG S
-     [[https://github.com/andreberg/Meslo-Font]] 
-#+BEGIN_SRC emacs-lisp
-  (set-fontset-font "fontset-default"
-                    'ascii
-                    (font-spec :name "Pragmata Pro"
-                               :weight 'normal :width 'normal
-                               :size 9.0)
-                    nil 'prepend)
-#+END_SRC
-**** Install fonts
-#+BEGIN_SRC emacs-lisp
-  (set-frame-font "fontset-default") 
-#+END_SRC
-*** Symbols
-#+BEGIN_SRC emacs-lisp
+  (if (version< emacs-version "25")
+      (progn
+        (set-fontset-font "fontset-default"
+                          'ascii
+                          (font-spec :name "Pragmata Pro"
+                                     :weight 'normal :width 'normal
+                                     :size 9.0)
+                          nil 'prepend)
+      (set-frame-font "fontset-default")))
 #+END_SRC
 ** Backups
    emacs likes to strew backup and autosave files everywhere. They

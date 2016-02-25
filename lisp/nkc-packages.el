@@ -92,6 +92,7 @@
   :config
   (bind-keys :map origami-mode-map
              ("C-<tab>" . origami-recursively-toggle-node)
+             ("C-c o t" . origami-recursively-toggle-node)
              ("C-c o n" . origami-next-fold)
              ("C-c o p" . origami-previous-fold)
              ("C-c o s" . origami-show-only-node)
@@ -255,17 +256,19 @@
 ;; [[file:nkc-packages.org::*elixir-mode][elixir-mode:1]]
 (use-package elixir-mode
   :config
-  ;; (defun nkc/smartparens-elixir-inline-p (id action context)
-  ;;   (when (eq action 'navigate)
-  ;;     (save-excursion
-  ;;    (looking-at-p "[^:]*?\\s-"))))
+  (defun nkc/sp-elixir-skip-inline-p (match beginning end)
+    (save-excursion
+      (when (looking-at match)
+        (forward-word))
+      (looking-back (concat ", " match))))
   (sp-with-modes '(elixir-mode)
     (sp-local-pair "do" "end"
-                   :actions '(insert navigate))
-    (sp-local-pair ", do:" ":"
-                   :actions '(insert navigate))
+                   :actions '(navigate)
+                   :skip-match 'nkc/sp-elixir-skip-inline-p)
+    ;; stops ends from matching with "do:"
     (sp-local-pair "fn" "end"
-                   :actions '(insert navigate))))
+                   :when '(("SPC" "RET"))
+                   :actions '(navigate insert))))
 ;; elixir-mode:1 ends here
 
 ;; alchemist

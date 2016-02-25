@@ -213,6 +213,9 @@ connector"
 
 ;; [[file:nkc-mode-line.org::*Minor%20modes][Minor\ modes:1]]
 (defvar nkc/minor-mode-replacer-alist '((auto-fill-function "↴")
+                                        (alchemist-mode "Alc")
+                                        (which-key-mode "")
+                                        (company-mode "")
                                         (visual-line-mode "↲")
                                         (helm-mode "")
                                         (lispy-mode "Lispy")

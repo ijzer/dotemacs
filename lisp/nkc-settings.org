@@ -28,7 +28,7 @@ files. Nothing fancy I'm afraid.
       (progn
         (set-fontset-font "fontset-default"
                           'ascii
-                          (font-spec :name "Pragmata Pro"
+                          (font-spec :name "Fira Code"
                                      :weight 'normal :width 'normal
                                      :size 9.0)
                           nil 'prepend)
@@ -67,6 +67,10 @@ files. Nothing fancy I'm afraid.
 ** Visual line mode
 #+BEGIN_SRC emacs-lisp
   (visual-line-mode)
+#+END_SRC
+** Backward Kill Word
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-w" 'backward-kill-word)
 #+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp

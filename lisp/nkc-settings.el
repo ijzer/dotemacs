@@ -24,7 +24,7 @@
     (progn
       (set-fontset-font "fontset-default"
                         'ascii
-                        (font-spec :name "Pragmata Pro"
+                        (font-spec :name "Fira Code"
                                    :weight 'normal :width 'normal
                                    :size 9.0)
                         nil 'prepend)
@@ -74,6 +74,12 @@
 ;; [[file:nkc-settings.org::*Visual%20line%20mode][Visual\ line\ mode:1]]
 (visual-line-mode)
 ;; Visual\ line\ mode:1 ends here
+
+;; Backward Kill Word
+
+;; [[file:nkc-settings.org::*Backward%20Kill%20Word][Backward\ Kill\ Word:1]]
+(bind-key "C-w" 'backward-kill-word)
+;; Backward\ Kill\ Word:1 ends here
 
 ;; Provide
 

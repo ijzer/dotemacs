@@ -72,6 +72,10 @@ files. Nothing fancy I'm afraid.
 #+BEGIN_SRC emacs-lisp
   (bind-key "C-w" 'backward-kill-word)
 #+END_SRC
+** Indent with spaces only
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-settings)

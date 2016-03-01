@@ -101,6 +101,31 @@
              ("C-c o u" . origami-undo)))
 ;; origami:1 ends here
 
+;; whitespace
+
+;; [[file:nkc-packages.org::*whitespace][whitespace:1]]
+(use-package whitespace
+  :init
+  (setq-default whitespace-style '(face trailing lines-tails empty indentation::space
+                                        tab-mark))
+  (global-whitespace-mode))
+;; whitespace:1 ends here
+
+;; nlinum
+
+;; [[file:nkc-packages.org::*nlinum][nlinum:1]]
+(use-package nlinum
+  :init
+  (add-hook 'nlinum-mode-hook
+            (lambda ()
+              (unless (boundp 'nlinum--width)
+                (setq nlinum--width
+                      (length (number-to-string
+                               (count-lines (point-min) (point-max))))))))
+  (setq nlinum-format "%d\u2502")
+  (global-nlinum-mode))
+;; nlinum:1 ends here
+
 ;; helm-config
 
 ;; [[file:nkc-packages.org::*helm-config][helm-config:1]]
@@ -255,6 +280,9 @@
 
 ;; [[file:nkc-packages.org::*elixir-mode][elixir-mode:1]]
 (use-package elixir-mode
+  :init
+  (defun nkc/elixir-mode-tabs-hook
+      (setq-local indent-tabs-mode nil))
   :config
   (defun nkc/sp-elixir-skip-inline-p (match beginning end)
     (save-excursion
@@ -268,7 +296,8 @@
     ;; stops ends from matching with "do:"
     (sp-local-pair "fn" "end"
                    :when '(("SPC" "RET"))
-                   :actions '(navigate insert))))
+                   :actions '(navigate insert)))
+  (add-hook 'elixir-mode-hook 'nkc/elixir-mode-tabs-hook))
 ;; elixir-mode:1 ends here
 
 ;; alchemist

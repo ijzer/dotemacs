@@ -74,6 +74,7 @@
   (show-smartparens-global-mode t)
   (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
   (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+  (set-face-attribute 'sp-pair-overlay-face nil :background "black")
   :bind (("C-<" . sp-forward-barf-sexp)
          ("C->" . sp-forward-slurp-sexp)
          ("C-M-f" . sp-forward-sexp)

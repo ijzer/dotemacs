@@ -94,6 +94,27 @@ all the autoload stuff but it's still nice to make it explicit.
                ("C-c o c" . origami-close-all-nodes)
                ("C-c o u" . origami-undo)))
 #+END_SRC
+** whitespace
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace
+    :init
+    (setq-default whitespace-style '(face trailing lines-tails empty indentation::space
+                                          tab-mark))
+    (global-whitespace-mode))
+#+END_SRC
+** nlinum
+#+BEGIN_SRC emacs-lisp
+  (use-package nlinum
+    :init
+    (add-hook 'nlinum-mode-hook
+              (lambda ()
+                (unless (boundp 'nlinum--width)
+                  (setq nlinum--width
+                        (length (number-to-string
+                                 (count-lines (point-min) (point-max))))))))
+    (setq nlinum-format "%d\u2502")
+    (global-nlinum-mode))
+#+END_SRC
 * Helm
 ** helm-config
 #+BEGIN_SRC emacs-lisp
@@ -198,7 +219,7 @@ all the autoload stuff but it's still nice to make it explicit.
   (defun nkc/lisp-mode-hook ()
     (unless lisp-mode-initialized
       (setq lisp-mode-initialized t)
-  
+
       (info-lookmore-elisp-userlast)
       (info-lookmore-elisp-cl))
 
@@ -232,6 +253,9 @@ all the autoload stuff but it's still nice to make it explicit.
 **** elixir-mode
 #+BEGIN_SRC emacs-lisp
   (use-package elixir-mode
+    :init
+    (defun nkc/elixir-mode-tabs-hook
+        (setq-local indent-tabs-mode nil))
     :config
     (defun nkc/sp-elixir-skip-inline-p (match beginning end)
       (save-excursion
@@ -245,7 +269,8 @@ all the autoload stuff but it's still nice to make it explicit.
       ;; stops ends from matching with "do:"
       (sp-local-pair "fn" "end"
                      :when '(("SPC" "RET"))
-                     :actions '(navigate insert))))
+                     :actions '(navigate insert)))
+    (add-hook 'elixir-mode-hook 'nkc/elixir-mode-tabs-hook))
 #+END_SRC
 **** alchemist
 #+BEGIN_SRC emacs-lisp
@@ -279,4 +304,3 @@ all the autoload stuff but it's still nice to make it explicit.
 #+BEGIN_SRC emacs-lisp
   (provide 'nkc-packages)
 #+END_SRC
-

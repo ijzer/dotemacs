@@ -15,4 +15,15 @@
 * Facespec definitions
 #+NAME: facespec-definition
 #+BEGIN_SRC emacs-lisp
+    '(
+      (nkc/spaceline-line-active (fg-base2 bg-base02 fmt-revbb))
+      (nkc/spaceline-face1-active (fg-base1 (:inherit spaceline-line-active)))
+      (nkc/spaceline-face2-active (fg-base3 (:inherit spaceline-line-active)))
+      (nkc/spaceline-line-inactive (fg-base0 bg-base02 fmt-revbb))
+      (nkc/spaceline-face1-inactive (fg-base1 (:inherit spaceline-line-active)))
+      (nkc/spaceline-face2-inactive (fg-base00 (:inherit spaceline-line-active)))
+      (nkc/spaceline-highlight-active (bg-orange (:inherit
+                                                  spaceline-line-active)))
+      (nkc/spaceline-highlight-inactive (bg-orange (:inherit
+                                                    spaceline-line-inactive))))
 #+END_SRC

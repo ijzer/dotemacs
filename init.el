@@ -7,6 +7,13 @@
 ;;    labeled? So I might remove everything but lisp/ from this later. 
 
 ;; [[file:init.org::*Load%20path][Load\ path:1]]
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (eval-and-compile
   (mapc
    #'(lambda (path)
@@ -58,3 +65,21 @@
 ;; [[file:init.org::*Settings][Settings:1]]
 (use-package nkc-settings)
 ;; Settings:1 ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
+ '(package-selected-packages
+   (quote
+    (visual-regexp nlinum erlang yaml-mode which-key use-package swiper-helm spaceline solarized smartparens smart-tabs-mode ruby-end pallet origami org-plus-contrib multiple-cursors markdown-mode magit lispy ledger-mode key-chord initsplit info-lookmore info+ helm-ls-git helm-descbinds fold-dwim emojify auto-compile alchemist)))
+ '(scroll-bar-mode nil t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

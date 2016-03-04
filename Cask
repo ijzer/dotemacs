@@ -37,5 +37,6 @@
 (depends-on "spaceline")
 (depends-on "swiper-helm")
 (depends-on "use-package")
+(depends-on "visual-regexp")
 (depends-on "which-key")
 (depends-on "yaml-mode")
